@@ -69,12 +69,22 @@ fn main() {
     println!("data = {:?}", p);
 
     println!("\nUsing itertools to find min and max values of the vector");
-    match p.iter().minmax().into_option() {
-        None => println!("Could not find min and max values"),
+    let (min, max) = min_max(&p);
+    println!("min = {}, max = {}", min, max)
+
+}
+
+fn min_max(v: &Vec<i32>) -> (i32, i32) {
+    match v.iter().minmax().into_option() {
+        None => panic!("Could not find min and max values"),
         Some(minmax) => {
             let (min, max) = minmax;
-            println!("min = {}, max = {}", min, max)
+            (*min, *max)
         },
     }
 }
 
+#[test]
+fn test_min_max() {
+    assert_eq!(min_max(&vec![1i32, 4, 2, 4, 5]), (1, 5));
+}
