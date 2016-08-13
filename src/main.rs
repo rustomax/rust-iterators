@@ -35,23 +35,18 @@ fn main() {
         println!("i = {:3}", i);
     }
 
-    println!("\nReverse inclusive range (consuming the range)");
+    println!("\nReverse inclusive range");
     let r = 1...10;
     for i in r.rev() {
         println!("i = {:2}", i);
     }
-    // Note that ranges are consumed by the loop.
-    // The following will fail to compile:
-    // println!("range = {:?}", r);
-    // error: use of moved value: `r`
-    // In order to avoid this, use &r in the loop
 
     println!("\nReverse range with a filter");
     for i in (-10..11).rev().filter(|x| x % 3 == 0) {
         println!("i = {:3}", i);
     }
 
-    println!("\nExample of a consumer (collect). Produces a vector of 1 to 10.");
+    println!("\nExample of a consumer (collect). Produces a vector of i32 values.");
     let v = (1..11).collect::<Vec<i32>>();
     println!("v = {:?}", v);
 
