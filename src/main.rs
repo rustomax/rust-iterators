@@ -1,36 +1,50 @@
 #![feature(step_by)]
+#![feature(inclusive_range_syntax)]
 
 #[macro_use] extern crate itertools;
 use itertools::Itertools;
 
 fn main() {
 
-    println!("\nBasic Range");
+    println!("\nBasic Range (exclusive on the right)");
     for i in 1..11 {
         println!("i = {:3}; i*i = {:3}", i, i * i);
     }
 
-    println!("\nRange with step. Notice this requires unstable \
+    println!("\nBasic Range (inclusive on the right). \
+        Note that this requires unstable feature use \
+        #![feature(inclusive_range_syntax)] available in nightly only");
+    for i in 1...10 {
+        println!("i = {:3}; i*i = {:3}", i, i * i);
+    }
+
+    println!("\nRange with step. Note that this requires unstable \
         feature use #![feature(step_by)]) available in nightly only");
     for i in (0..11).step_by(2) {
         println!("i = {:2}", i);
     }
 
-    println!("\nSame can be done with a filter (using closures). \
-        Doesn't require unstable features and is way more flexible.");
+    println!("\nSame can be done with a filter using a closure. \
+        Doesn't require unstable features and is more flexible.");
     for i in (0..11).filter(|x| x % 2 == 0) {
         println!("i = {:3}", i);
     }
 
-    println!("\nSame using itertools.");
+    println!("\nSame using itertools");
     for i in (0..11).step(2) {
         println!("i = {:3}", i);
     }
 
-    println!("\nReverse range");
-    for i in (0..11).rev() {
+    println!("\nReverse inclusive range (consuming the range)");
+    let r = 1...10;
+    for i in r.rev() {
         println!("i = {:2}", i);
     }
+    // Note that ranges are consumed by the loop.
+    // The following will fail to compile:
+    // println!("range = {:?}", r);
+    // error: use of moved value: `r`
+    // In order to avoid this, use &r in the loop
 
     println!("\nReverse range with a filter");
     for i in (-10..11).rev().filter(|x| x % 3 == 0) {
