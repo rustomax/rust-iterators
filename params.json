@@ -1,0 +1,6 @@
+{
+  "name": "Rust-iterators",
+  "tagline": "Basic Rust iterator usage",
+  "body": "# rust-iterators\r\nDemonstrates basic Rust iterator usage. Notice that `step_by()` function uses `#![feature(step_by)]` requiring `rust-nightly`.\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
