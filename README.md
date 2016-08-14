@@ -3,7 +3,7 @@ Demonstrates basic Rust iterator use.
 
 [![Build Status](https://travis-ci.org/rustomax/rust-iterators.svg?branch=master)](https://travis-ci.org/rustomax/rust-iterators)
 
-The goal of this tutorial is to provide a handy reference to some of the most common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or core iterator concepts described in [The Book](https://doc.rust-lang.org/book/iterators.html). It assumes that you already have cursory familiarity with Rust.
+The goal of this tutorial is to provide a handy reference to some of the most common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/iterators.html). It assumes that you already have cursory familiarity with Rust.
 
 Note that certain features (`step_by()` and inclusive range) require `nightly` compiler.
 
@@ -96,7 +96,16 @@ for i in (0..11).rev() {
 // output: 10 9 8 7 6 5 4 3 2 1 0
 ```
 
-## Iterating over arrays
+Another common iterator adapter, `map()`, applies a closure to each element, and returns the resulting iterator. Here is an example of an iterator that produces a sequence of squares of numbers from 1 to 10:
+
+```rust
+for i in (1..11).map(|x| x * x) {
+    print!("{} ", i);
+}
+// output: 1 4 9 16 25 36 49 64 81 100
+```
+
+## Iterating over Arrays
 
 Similarly to iterating over ranges, we can iterate over an array. The benefit of this is that arrays can contain values of arbitrary types, not just integrals. The only caveat is that array is **not** an iterator. We need to turn it into an iterator using the `iter()` method.
 
@@ -168,7 +177,7 @@ for (c, p) in matrix {
 
 ## Ranges of Characters
 
-Programs that manipulate strings or text need the ability to iterate over a range of characters. `char_iter` crate provides convenient way to generate ranges of chars. It supports Unicode characters.
+Programs that manipulate strings or text often require the ability to iterate over a range of characters. `char_iter` crate provides convenient way to generate ranges of chars. It supports Unicode characters.
 
 To use the `char_iter`, put the following in your `Cargo.toml`
 
@@ -189,6 +198,52 @@ for c in char_iter::new('Д', 'П') {
 ```
 
 ## Iterating over Vectors
+
+Vector is one of Rust's fundamental structures. By its nature it is well suited to represent series of repetitive items. There are a number of language facilities in Rust that allow using vectors as iterators and vice-versa.
+
+In the simplest case, similarly to how we created an iterator from an array, we can create an iterator from a vector using the `iter()` method:
+
+```rust
+let nums = vec![1, 2, 3, 4, 5];
+
+for i in nums.iter() {
+   print!("{} ", i);
+}
+// output: 1 2 3 4 5
+```
+
+Now, let's do the opposite - create a vector from an iterator. In order to do that we need what is called a *consumer*. Consumers force lazy iterators to actually produce values.
+
+A basic consumer is `collect()` - a method that takes values from an iterator and converts them into a collection of required type. Here we are taking a range of numbers from 1 to 10 and transforming it into a vector of i32:
+
+```rust
+let v = (1..11).collect::<Vec<i32>>();
+println!("{:?}", v);
+// output: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+```
+
+There are a few ways in which we can iterate over the vector. A good Rustic style is precisely to use the iterator:
+
+```rust
+let v = vec![1, 2, 3];
+for n in v.iter() {
+  print!("{} ", n);
+}
+// output: 1 2 3
+```
+
+To get both the element and its index, you can use `enumerate()` method, which returns a tuple containing the index and the item on each iteration:
+
+```rust
+let v = vec![1, 2, 3];
+for (i, n) in v.iter().enumerate() {
+    println!("v[{}] = {}", i, n);
+}
+// output:
+// v[0] = 1
+// v[1] = 2
+// v[2] = 3
+```
 
 ## Itertools Crate
 
