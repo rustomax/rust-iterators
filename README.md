@@ -253,7 +253,7 @@ So far we have dealt with iterators that operated on some finite range of values
 let r = (1..).collect::<Vec<i32>>();
 ```
 
-The (1..) statement defines a range that starts with 1 and increments infinitely. In practice, such program compiles and runs, but will eventually crash with the error message: `fatal runtime error: out of memory`.
+The `(1..)` defines a range that starts with 1 and increments infinitely. In practice, such program compiles and runs, but will eventually crash with the error message: `fatal runtime error: out of memory`.
 
 Well, that's not very practical, you might say. Indeed, by themselves infinite ranges are pretty useless. What makes them useful is combining them with other adapters and consumers.
 
