@@ -245,6 +245,28 @@ for (i, n) in v.iter().enumerate() {
 // v[2] = 3
 ```
 
+# Infinity and Beyond
+
+So far we have dealt with iterators that operated on some finite range of values. Rust generalizes iterators in such a way that it is in fact possible to create an infinite range! Let us consider the following example:
+
+```rust
+let r = (1..).collect::<Vec<i32>>();
+```
+
+The (1..) statement defines a range that starts with 1 and increments infinitely. In practice, such program compiles and runs, but will eventually crash with the error message: `fatal runtime error: out of memory`.
+
+Well, that's not very practical, you might say. Indeed, by themselves infinite ranges are pretty useless. What makes them useful is combining them with other adapters and consumers.
+
+One particularly helpful pattern involves using the `take()` method to limit the number of items returned by the iterator. The following iterator will return the first 10 items in a sequence of squares of integers that are divisible by 5 without a remainder.
+
+```rust
+let r = (1..).map(|x| x * x).filter(|x| x % 5 == 0 ).take(5);
+for i in r {
+  print!("{} ", i);
+}
+// Output: 25 100 225 400 625 900 1225 1600 2025 2500
+```
+
 ## Itertools Crate
 
 To be continued...
