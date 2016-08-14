@@ -3,9 +3,9 @@ Demonstrates basic Rust iterator use.
 
 [![Build Status](https://travis-ci.org/rustomax/rust-iterators.svg?branch=master)](https://travis-ci.org/rustomax/rust-iterators)
 
-The goal of this tutorial is to provide a handy reference to some of the most common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/iterators.html). It assumes that you already have cursory familiarity with Rust.
+The goal of this tutorial is to provide a handy reference to some of the most common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/iterators.html). It also assumes that you already have cursory familiarity with Rust.
 
-Note that certain features (`step_by()` and inclusive range) require `nightly` compiler.
+> Note that certain features (`step_by()` and inclusive range) require `nightly` compiler.
 
 ## Introduction
 
@@ -253,14 +253,12 @@ So far we have dealt with iterators that operated on some finite range of values
 let r = (1..).collect::<Vec<i32>>();
 ```
 
-The `(1..)` defines a range that starts with 1 and increments infinitely. In practice, such program compiles and runs, but will eventually crash with the error message: `fatal runtime error: out of memory`.
-
-Well, that's not very practical, you might say. Indeed, by themselves infinite ranges are pretty useless. What makes them useful is combining them with other adapters and consumers.
+The `(1..)` defines a range that starts with 1 and increments infinitely. In practice, such program compiles and runs, but eventually crashes with the error message: `fatal runtime error: out of memory`. Well, that's not very practical, you might say. Indeed, by themselves infinite ranges are pretty useless. What makes them useful is combining them with other adapters and consumers.
 
 One particularly helpful pattern involves using the `take()` method to limit the number of items returned by the iterator. The following iterator will return the first 10 items in a sequence of squares of integers that are divisible by 5 without a remainder.
 
 ```rust
-let r = (1..).map(|x| x * x).filter(|x| x % 5 == 0 ).take(5);
+let r = (1..).map(|x| x * x).filter(|x| x % 5 == 0 ).take(10);
 for i in r {
   print!("{} ", i);
 }
