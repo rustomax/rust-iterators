@@ -222,7 +222,7 @@ println!("{:?}", v);
 // output: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
 
-There are a few ways in which we can iterate over the vector. A good Rustic style is precisely to use the iterator:
+There are a few ways we can iterate over a vector. A good Rustic style is precisely to use the iterator:
 
 ```rust
 let v = vec![1, 2, 3];
