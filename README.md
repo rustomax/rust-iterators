@@ -33,7 +33,7 @@ for i in 1..11 {
 #![feature(inclusive_range_syntax)]
 
 for i in 1...10 {
-    print!("{} ", i);
+  print!("{} ", i);
 }
 // output: 1 2 3 4 5 6 7 8 9 10
 ```
@@ -43,7 +43,7 @@ If you are not planning on using the iterator variable inside the loop, you can 
 ```rust
 let mut n: i32 = 0;
 for _ in 0..10 {
-    n += 1;
+  n += 1;
 }
 println!("num = {}", n);
 // output: num = 10
@@ -66,16 +66,16 @@ Often, a range needs to be incremented not by one (1), but by a different number
 #![feature(step_by)]
 
 for i in (0..11).step_by(2) {
-    print!("{} ", i);
+  print!("{} ", i);
 }
 // output: 0 2 4 6 8 10
 ```
 
-The `step_by()` method is not the only way to get custom increment. The same result can be achieved with a filter using a *closure*. It doesn't require an unstable Rust `feature` and is in general a lot more flexible.
+The `step_by()` method is not the only way to get a custom increment. The same result can be achieved with a filter using a *closure*. It doesn't require an unstable Rust `feature` and is in general a lot more flexible.
 
 ```rust
 for i in (0..11).filter(|x| x % 2 == 0) {
-    print!("{} ", i);
+  print!("{} ", i);
 }
 // output: 0 2 4 6 8 10
 ```
@@ -88,7 +88,7 @@ And what if you need a non-contiguous range? It is easily accomplished by combin
 let c = (1..4).chain((6..9));
 
 for i in c {
-    print!("{:?} ", i);
+  print!("{} ", i);
 }
 // output: 1 2 3 6 7 8
 ```
@@ -107,10 +107,8 @@ And then generate a character range with `char_iter::new()` method:
 ```rust
 extern crate char_iter;
 
-fn main() {
-    for c in char_iter::new('А', 'Я') {
-        print!("{} ", c);
-    }
+for c in char_iter::new('Д', 'П') {
+  print!("{} ", c);
 }
 // output: Д Е Ж З И Й К Л М Н О П
 ```
