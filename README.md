@@ -245,7 +245,7 @@ for (i, n) in v.iter().enumerate() {
 // v[2] = 3
 ```
 
-# Infinity and Beyond
+## Infinity and Beyond
 
 So far we have dealt with iterators that operated on some finite range of values. Rust generalizes iterators in such a way that it is in fact possible to create an infinite range! Let us consider the following example:
 
