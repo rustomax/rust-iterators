@@ -59,7 +59,7 @@ println!("num = {}", (0..10).count());
 // output: num = 10
 ```
 
-## Complex Ranges
+## Digging Deeper
 
 If the basic incremental sequential range does not satisfy your needs, there are plenty of ways in Rust to customize the range iterators. Let's look at a few common ones.
 
@@ -96,9 +96,22 @@ for i in (0..11).rev() {
 // output: 10 9 8 7 6 5 4 3 2 1 0
 ```
 
-## Combining Range Adapters
+## Iterating over arrays
 
-While in the previous sections we have covered a good variety of methods allowing you to generate many different types of ranges, the real power of Rust shines when you start combining these approaches.
+Similarly to iterating over ranges, we can iterate over an array. The benefit of this is that arrays can contain values of arbitrary types, not just integrals. The only caveat is that array is **not** an iterator. We need to turn it into an iterator using the `iter()` method.
+
+```rust
+let a = ["Toronto", "New York", "Melbourne"];
+
+for city in a.iter() {
+  print!("{}, ", city);
+}
+// output: Toronto, New York, Melbourne,
+```
+
+## Combining Iterator Adapters
+
+While in the previous sections we have covered a good variety of methods allowing you to generate many different types of iterators, the real power of Rust shines when you start combining these approaches.
 
 What if you wanted an inclusive range between 10 and 0 that is decremented by 2? This is easily accomplished by combining a feature and a couple of methods into a single iterator:
 
@@ -122,16 +135,35 @@ for i in c {
 // output: 1 2 3 6 7 8
 ```
 
-As you can imagine, things can get pretty creative very quickly! Here is a combination of two ranges, one of them incremented with a filter, another one - decremented. Notice how Rust allows us to visually better align such statements by splitting them into multiple lines.
+Things can get pretty creative very quickly! Here is a combination of two ranges, one of them incremented and has a filter, another one - decremented. Notice how Rust allows us to visually better represent such statements by splitting them into multiple lines.
 
 ```rust
-for i in (1..100)
-    .filter(|&x| x <= 5)
-    .chain((6..9)
-    .rev()) {
+let r = (1..100).filter(|&x| x <= 5)
+  .chain((6..9).rev()
+);
+
+for i in r {
   print!("{} ", i);
 }
 // output: 1 2 3 4 5 8 7 6
+```
+
+Another handy method is `zip()`. It is somewhat similar to `chain()` in that it combines two iterators into one. By contrast with `chain()`, however, `zip()` produces not a contiguous iterator, but an iterator of tuples:
+![zip() method](https://cloud.githubusercontent.com/assets/20992642/17650212/185c5486-6216-11e6-8fd7-34d2aa976c07.PNG)
+
+```rust
+let cities = ["Toronto", "New York", "Melbourne"];
+let populations = [2_615_060, 8_550_405, ‎4_529_500];
+
+let matrix = cities.iter().zip(populations.iter());
+
+for (c, p) in matrix {
+  println!("{:10}: population = {}", c, p);
+}
+// output:
+// Toronto   : population = 2615060
+// New York  : population = 8550405
+// Melbourne : population = 4529500
 ```
 
 ## Ranges of Characters
