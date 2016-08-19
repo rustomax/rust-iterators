@@ -3,9 +3,9 @@ Demonstrates basic Rust iterator use.
 
 [![Build Status](https://travis-ci.org/rustomax/rust-iterators.svg?branch=master)](https://travis-ci.org/rustomax/rust-iterators)
 
-The goal of this tutorial is to provide a handy reference to some of the most common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/iterators.html). It also assumes that you already have cursory familiarity with Rust.
+The goal of this tutorial is to provide a handy reference to some of the most common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/iterators.html). It assumes that you already have cursory familiarity with Rust.
 
-> Note that certain features (`step_by()` and inclusive range) require `nightly` compiler.
+> Certain features (`step_by()` and inclusive range) require `nightly` compiler.
 
 ## Introduction
 
@@ -267,4 +267,105 @@ for i in r {
 
 ## Itertools Crate
 
-To be continued...
+Coming soon...
+
+## Creating Your Own iterators
+
+Beautiful thing about Rust is that you can use generic language facilities to extend it. Let us leverage this awesome power and create our own iterator! We will build a very simple iterator that produces a series of pairs of temperatures `(Fahrenheit, Celsius)`, represented by a tuple of floating-point numbers `(f32, f32)`. The temperature is calculated using commonly known formula: `°C = (°F - 32) / 1.8`.
+
+An iterator starts with a `struct`. Whatever we name the `struct` will also be the name of the iterator. We will call ours `FahrToCelc`. The `struct` contains fields that hold useful information. We will have two `f32` fields - the temperature in Fahrenheit, and the increment step:
+
+```rust
+struct FahrToCelc {
+  fahr: f32,
+  step: f32,
+}
+```
+
+Next, we will create a convenience function `new()` that initializes the iterator. This is strictly speaking not necessary and is not part of the iterator implementation, but I find it to be a nice syntactic sugar that improves overall program readability:
+
+```rust
+impl FahrToCelc {
+  fn new(fahr: f32, step: f32) -> FahrToCelc {
+    FahrToCelc { fahr: fahr, step: step }
+  }
+}
+```
+
+Finally, we program the behavior of the iterator by implementing the `Iterator` trait for our `struct`. The trait at a minimum needs to contain the following:
+
+- Definition of the `type Item`. It describes what kind of things the iterator will produce. As mentioned before our iterator produces temperature pairs `(Fahrenheit, Celsius)` represented by a tuple of floating-point numbers `(f32, f32)`, so our `type Item` definition will look like this:
+
+```rust
+type Item = (f32, f32);
+```
+
+- Function `next()` that actually generates the next `Item`. `next()` takes a mutable reference to `self` and returns an `Option` encapsulating the `Item`. The reason why we have to return an `Option` and not the `Item` itself is because many iterators need to account for the situation where they have reached the end of the sequence, in which case they return `None`. Since our iterator generates an infinite sequence, our `next` will always return `Some(Item)`, more precisely, `Some((f32, f32))`. Our `next()` function declaration looks like this:
+
+```rust
+fn next (&mut self) -> Option<(f32, f32)>
+```
+
+The `next()` function typically also does some internal housekeeping. Ours will keep track of the last Fahrenheit temperature returned, so that we can increment it by `step` on subsequent iteration. By the way, making these modifications to internal fields is the reason why we need to pass a *mutable* reference to `self` as a parameter to `next()`.
+
+Combining things together, here is the `Iterator` trait implementation:
+
+```rust
+impl Iterator for FahrToCelc {
+  type Item = (f32, f32);
+
+  fn next (&mut self) -> Option<(f32, f32)> {
+    let curr_fahr = self.fahr;
+    let curr_celc = (self.fahr - 32.0) / 1.8;
+    self.fahr = self.fahr + self.step;
+    Some((curr_fahr, curr_celc))
+  }
+}
+```
+
+At last, the complete program:
+
+```rust
+struct FahrToCelc {
+  fahr: f32,
+  step: f32,
+}
+
+impl FahrToCelc {
+  fn new(fahr: f32, step: f32) -> FahrToCelc {
+    FahrToCelc { fahr: fahr, step: step }
+  }
+}
+
+impl Iterator for FahrToCelc {
+  type Item = (f32, f32);
+
+  fn next (&mut self) -> Option<(f32, f32)> {
+    let curr_fahr = self.fahr;
+    let curr_celc = (self.fahr - 32.0) / 1.8;
+    self.fahr = self.fahr + self.step;
+    Some((curr_fahr, curr_celc))
+  }
+}
+
+fn main() {
+  // pass the starting temperature and step to the initializer function
+  let ftc = FahrToCelc::new(0.0, 5.0);
+
+  // produce the iterator table of first 5 values
+  let temp_table = ftc.take(5);
+
+  // print out the temperature table nicely
+  for (f, c) in temp_table {
+    println!("{:7.2} °F = {:7.2} °C", f, c);
+  }
+}
+
+// output:
+//  0.00 °F =  -17.78 °C
+//  5.00 °F =  -15.00 °C
+// 10.00 °F =  -12.22 °C
+// 15.00 °F =   -9.44 °C
+// 20.00 °F =   -6.67 °C
+
+```
