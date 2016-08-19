@@ -3,9 +3,9 @@ Demonstrates basic Rust iterator use.
 
 [![Build Status](https://travis-ci.org/rustomax/rust-iterators.svg?branch=master)](https://travis-ci.org/rustomax/rust-iterators)
 
-The goal of this tutorial is to provide a handy reference to some of the common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/iterators.html). In fact it is highly encouraged that you read through both.
+The goal of this tutorial is to provide a handy reference to some of the common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/iterators.html). In fact, it is highly encouraged that you read through both.
 
-> This tutorial assumes that you already have cursory familiarity with Rust.<br/>
+> This tutorial assumes that you already have at least cursory familiarity with Rust.<br/>
 > Certain features (`step_by()` and inclusive range) require `nightly` compiler.
 
 ## Introduction
@@ -22,7 +22,7 @@ While this venerable method is powerful and flexible enough to accommodate many 
 
 ## Basic Ranges
 
-The most basic way to loop over a series of items in Rust is the range. Range is created using `..` notation and produces an iterator that increments by one (1):
+The most basic way to loop over a series of integers in Rust is the range. Range is created using `..` notation and produces an iterator of integers incremented by `1`:
 
 ```rust
 for i in 1..11 {
@@ -31,7 +31,7 @@ for i in 1..11 {
 // output: 1 2 3 4 5 6 7 8 9 10
 ```
 
- The code above will print a series of numbers from 1 to 10, and not include the last number (11). In other words, the `..` produces an iterator that is inclusive on the left and exclusive on the right. In order to get a range that is inclusive on both ends, you use the `...` notation. The inclusive range is currently an unstable feature, requiring `nightly` compiler:
+ The code above will print a series of numbers from `1` to `10`, and not include the last number `11`. In other words, the `..` produces an iterator that is inclusive on the left and exclusive on the right. In order to get a range that is inclusive on both ends, you use the `...` notation. The inclusive range is currently an unstable feature, requiring `nightly` compiler:
 
 ```rust
 #![feature(inclusive_range_syntax)]
@@ -64,7 +64,7 @@ println!("num = {}", (0..10).count());
 
 If the basic incremental sequential range does not satisfy your needs, there are plenty of ways in Rust to customize the range iterators. Let's look at a few common ones.
 
-Often, a range needs to be incremented not by one (1), but by a different number. To achieve this, you can modify your range with `step_by()` method, which requires the use of `feature` available in `nightly` compiler only:
+Often, a range needs to be incremented not by `1`, but by a different number. To achieve this, you can modify your range with `step_by()` method, which requires the use of `feature` available in `nightly` compiler only:
 
 ```rust
 #![feature(step_by)]
@@ -75,7 +75,7 @@ for i in (0..11).step_by(2) {
 // output: 0 2 4 6 8 10
 ```
 
-The `step_by()` method is not the only way to get a custom increment. The same result can be achieved with a filter containing a *closure*. It doesn't require an unstable Rust `feature` and is in general a lot more flexible.
+The `step_by()` method is not the only way to get a custom increment. The same result can be achieved with a filter containing a *closure*. It doesn't require an unstable Rust `feature` and is in general a lot more flexible. The following iterator produces a series of integers in the given range `(0..20)` that divide by `2` and `3` without a remainder:
 
 ```rust
 #![feature(inclusive_range_syntax)]
@@ -86,8 +86,6 @@ for i in (0...20).filter(|x| (x % 2 == 0) && (x % 3 == 0)) {
 // output: 0 6 12 18
 ```
 
-This filter says, "only keep the numbers in the given range (0..20) that divide by 2 and 3 without a remainder".
-
 While by default ranges are incremental, they can easily be reversed using the `rev()` method.
 
 ```rust
@@ -97,7 +95,7 @@ for i in (0..11).rev() {
 // output: 10 9 8 7 6 5 4 3 2 1 0
 ```
 
-Another common iterator adapter, `map()`, applies a closure to each element, and returns the resulting iterator. Here is an example of an iterator that produces a sequence of squares of numbers from 1 to 10:
+Another common iterator adapter, `map()`, applies a closure to each element, and returns the resulting iterator. Here is an example of an iterator that produces a sequence of squares of numbers from `1` to `10`:
 
 ```rust
 for i in (1..11).map(|x| x * x) {
@@ -123,7 +121,7 @@ for city in a.iter() {
 
 While in the previous sections we have covered a good variety of methods allowing you to generate many different types of iterators, the real power of Rust shines when you start combining these approaches.
 
-What if you wanted an inclusive range between 10 and 0 that is decremented by 2? This is easily accomplished by combining a feature and a couple of methods into a single iterator:
+What if you wanted an inclusive range between `10` and `0` that is decremented by `2`? This is easily accomplished by combining a feature and a couple of methods into a single iterator:
 
 ```rust
 #![feature(inclusive_range_syntax)]
@@ -145,20 +143,19 @@ for i in c {
 // output: 1 2 3 6 7 8
 ```
 
-Things can get pretty creative very quickly! Here is a combination of two ranges, one of them incremented and has a filter, another one - decremented. Notice how Rust allows us to visually better represent such statements by splitting them into multiple lines.
+You can get very creative combining things! Below is an iterator that combines two ranges: the first one is incremented and filtered, another one - decremented. Notice how Rust allows us to visually better represent such statements by splitting them into multiple lines. Not sure what such an abomination could be used for, but here it is nonetheless!
 
 ```rust
-let r = (1..100).filter(|&x| x <= 5)
-  .chain((6..9).rev()
-);
+let r = (1..20).filter(|&x| x % 5 == 0)
+  .chain((6..9).rev());
 
 for i in r {
   print!("{} ", i);
 }
-// output: 1 2 3 4 5 8 7 6
+// output: 5 10 15 8 7 6
 ```
 
-Another handy method is `zip()`. It is somewhat similar to `chain()` in that it combines two iterators into one. By contrast with `chain()`, however, `zip()` produces not a contiguous iterator, but an iterator of tuples:
+Another handy method is `zip()`. It is somewhat similar to `chain()` in that it combines two iterators into one. By contrast with `chain()`, `zip()` produces not a contiguous iterator, but an iterator of tuples:
 ![zip() method](https://cloud.githubusercontent.com/assets/20992642/17650212/185c5486-6216-11e6-8fd7-34d2aa976c07.PNG)
 
 ```rust
@@ -263,7 +260,7 @@ let r = (1..).map(|x| x * x).filter(|x| x % 5 == 0 ).take(10);
 for i in r {
   print!("{} ", i);
 }
-// Output: 25 100 225 400 625 900 1225 1600 2025 2500
+// output: 25 100 225 400 625 900 1225 1600 2025 2500
 ```
 
 ## Itertools Crate
@@ -274,7 +271,7 @@ Coming soon...
 
 Beautiful thing about Rust is that you can use generic language facilities to extend it. Let us leverage this awesome power and create our own iterator! We will build a very simple iterator that produces a series of pairs of temperatures `(Fahrenheit, Celsius)`, represented by a tuple of floating-point numbers `(f32, f32)`. The temperature is calculated using commonly known formula: `°C = (°F - 32) / 1.8`.
 
-An iterator starts with a `struct`. Whatever we name the `struct` will also be the name of the iterator. We will call ours `FahrToCelc`. The `struct` contains fields that hold useful information. We will have two `f32` fields - the temperature in Fahrenheit, and the increment step:
+An iterator starts with a `struct`. Whatever we name the `struct` will also be the name of the iterator. We will call ours `FahrToCelc`. The `struct` contains fields that hold useful information that persists between subsequent iterator calls. We will have two `f32` fields - the temperature in Fahrenheit, and the increment step:
 
 ```rust
 struct FahrToCelc {
@@ -283,7 +280,7 @@ struct FahrToCelc {
 }
 ```
 
-Next, we will create a convenience function `new()` that initializes the iterator. This is strictly speaking not necessary and is not part of the iterator implementation, but I find it to be a nice syntactic sugar that improves overall program readability:
+Next, we will create a convenience method `new()` that initializes the iterator by passing it initial values for temperature in Fahrenheit and the increment step. This method is strictly speaking not necessary and is not part of the iterator implementation, but I find it to be a nice syntactic sugar that improves overall program readability:
 
 ```rust
 impl FahrToCelc {
@@ -295,13 +292,13 @@ impl FahrToCelc {
 
 Finally, we program the behavior of the iterator by implementing the `Iterator` trait for our `struct`. The trait at a minimum needs to contain the following:
 
-- Definition of the `type Item`. It describes what kind of things the iterator will produce. As mentioned before our iterator produces temperature pairs `(Fahrenheit, Celsius)` represented by a tuple of floating-point numbers `(f32, f32)`, so our `type Item` definition will look like this:
+- Definition of the `Item` type. It describes what kind of things the iterator will produce. As mentioned before our iterator produces temperature pairs `(Fahrenheit, Celsius)` represented by a tuple of floating-point numbers `(f32, f32)`, so our `Item` type definition will look like this:
 
 ```rust
 type Item = (f32, f32);
 ```
 
-- Function `next()` that actually generates the next `Item`. `next()` takes a mutable reference to `self` and returns an `Option` encapsulating the `Item`. The reason why we have to return an `Option` and not the `Item` itself is because many iterators need to account for the situation where they have reached the end of the sequence, in which case they return `None`. Since our iterator generates an infinite sequence, our `next` will always return `Some(Item)`, more precisely, `Some((f32, f32))`. Our `next()` function declaration looks like this:
+- Function `next()` that actually generates the next `Item`. `next()` takes a mutable reference to `self` and returns an `Option` encapsulating the next value. The reason why we have to return an `Option` and not the item itself is because many iterators need to account for the situation where they have reached the end of the sequence, in which case they return `None`. Since our iterator generates an infinite sequence, our `next()` method will always return `Some(Item)`, more specifically, `Some((f32, f32))`. Thus, our `next()` function declaration looks like this:
 
 ```rust
 fn next (&mut self) -> Option<(f32, f32)>
@@ -368,5 +365,4 @@ fn main() {
 // 10.00 °F =  -12.22 °C
 // 15.00 °F =   -9.44 °C
 // 20.00 °F =   -6.67 °C
-
 ```
