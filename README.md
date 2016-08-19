@@ -315,9 +315,9 @@ extern crate itertools;
 use itertools::Itertools;
 
 let happiness_index = vec![ ("Austria", 12), ("Costa Rica", 14), ("Norway", 4),
-("Australia", 9), ("Netherlands", 7), ("New Zealand", 8), ("United States", 13),
-("Israel", 11), ("Denmark", 1), ("Finland", 5), ("Iceland", 3),
-("Sweden", 10), ("Canada", 6), ("Puerto Rico", 15), ("Switzerland", 2) ];
+  ("Australia", 9), ("Netherlands", 7), ("New Zealand", 8), ("United States", 13),
+  ("Israel", 11), ("Denmark", 1), ("Finland", 5), ("Iceland", 3),
+  ("Sweden", 10), ("Canada", 6), ("Puerto Rico", 15), ("Switzerland", 2) ];
 
 let top_contries = happiness_index
   .into_iter()
