@@ -109,9 +109,9 @@ for i in (1..11).map(|x| x * x) {
 Similarly to iterating over ranges, we can iterate over an array. The benefit of this is that arrays can contain values of arbitrary types, not just integrals. The only caveat is that array is **not** an iterator. We need to turn it into an iterator using the `iter()` method.
 
 ```rust
-let a = ["Toronto", "New York", "Melbourne"];
+let cities = ["Toronto", "New York", "Melbourne"];
 
-for city in a.iter() {
+for city in cities.iter() {
   print!("{}, ", city);
 }
 // output: Toronto, New York, Melbourne,
@@ -143,10 +143,11 @@ for i in c {
 // output: 1 2 3 6 7 8
 ```
 
-You can get very creative combining things! Below is an iterator that combines two ranges: the first one is incremented and filtered, another one - decremented. Notice how Rust allows us to visually better represent such statements by splitting them into multiple lines. Not sure what such an abomination could be used for, but here it is nonetheless!
+You can get very creative combining things! Below is an iterator that combines two ranges: the first one is incremented and filtered, another one - decremented. Not sure what such an abomination could be used for, but here it is nonetheless!
 
 ```rust
-let r = (1..20).filter(|&x| x % 5 == 0)
+let r = (1..20)
+  .filter(|&x| x % 5 == 0)
   .chain((6..9).rev());
 
 for i in r {
@@ -154,6 +155,8 @@ for i in r {
 }
 // output: 5 10 15 8 7 6
 ```
+
+> Notice how in the example above Rust allows us to visually better represent complex iterator statements by splitting them into multiple lines.
 
 Another handy method is `zip()`. It is somewhat similar to `chain()` in that it combines two iterators into one. By contrast with `chain()`, `zip()` produces not a contiguous iterator, but an iterator of tuples:
 ![zip() method](https://cloud.githubusercontent.com/assets/20992642/17650212/185c5486-6216-11e6-8fd7-34d2aa976c07.PNG)
@@ -175,7 +178,7 @@ for (c, p) in matrix {
 
 ## Ranges of Characters
 
-Programs that manipulate strings or text often require the ability to iterate over a range of characters. `char_iter` crate provides convenient way to generate ranges of chars. It supports Unicode characters.
+Programs that manipulate strings or text often require the ability to iterate over a range of characters. `char_iter` crate provides convenient way to generate such ranges. `char_iter` supports Unicode characters.
 
 To use the `char_iter`, put the following in your `Cargo.toml`
 
@@ -263,9 +266,77 @@ for i in r {
 // output: 25 100 225 400 625 900 1225 1600 2025 2500
 ```
 
-## Itertools Crate
+## Itertools
 
-Coming soon...
+The [itertools crate](http://bluss.github.io/rust-itertools/doc/itertools/trait.Itertools.html) contains powerful additional iterator adapters. Below are some examples.
+
+To use `itertools`, add the following to your `Cargo.toml`:
+
+```
+[dependencies]
+itertools = "*"
+```
+
+The `unique()` adapter eliminates duplicates from an iterator. The duplicates do not need to be sequential.
+
+```rust
+extern crate itertools;
+use itertools::Itertools;
+
+let data = vec![1, 4, 3, 1, 4, 2, 5];
+let unique = data.iter().unique();
+
+for d in unique {
+  print!("{} ", d);
+}
+
+//output: 1 4 3 2 5
+```  
+
+The `join()` adapter combines iterator elements into a single string with a separator in between the elements.
+
+```rust
+extern crate itertools;
+use itertools::Itertools;
+
+let creatures = vec!["banshee", "basilisk", "centaur"];
+let list = creatures.iter().join(", ");
+println!("In the enchanted forest, we found {}.", list);
+
+// output: In the enchanted forest, we found banshee, basilisk, centaur.
+```   
+
+The `sorted_by()` adapter applies custom sorting order to iterator elements, returning a sorted vector. The following program will print out top 5 happiest countries, according to 2016 World Happiness Index.
+
+> `sorted_by()` uses [Ordering trait](https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html) to sort elements.
+
+```rust
+extern crate itertools;
+use itertools::Itertools;
+
+let happiness_index = vec![ ("Austria", 12), ("Costa Rica", 14), ("Norway", 4),
+("Australia", 9), ("Netherlands", 7), ("New Zealand", 8), ("United States", 13),
+("Israel", 11), ("Denmark", 1), ("Finland", 5), ("Iceland", 3),
+("Sweden", 10), ("Canada", 6), ("Puerto Rico", 15), ("Switzerland", 2) ];
+
+let top_contries = happiness_index
+  .into_iter()
+  .sorted_by(|a, b| (&a.1).cmp(&b.1))
+  .into_iter()
+  .take(5);
+
+for (country, rating) in top_contries {
+  println!("# {}: {}", rating, country);
+}
+
+// output:
+// # 1: Denmark
+// # 2: Switzerland
+// # 3: Iceland
+// # 4: Norway
+// # 5: Finland
+
+```
 
 ## Creating Your Own iterators
 
