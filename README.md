@@ -298,6 +298,8 @@ let sum: i32 = grades.iter().sum();
 let gpa = sum as f32 / grades.len() as f32;
 
 println!("sum = {}, gpa = {:.2}", sum, gpa);
+
+// output: sum = 43, gpa = 6.14
 ```
 
 ## Infinity and Beyond
