@@ -62,7 +62,7 @@ for i in 1...10 {
 // output: 1 2 3 4 5 6 7 8 9 10
 ```
 
-If you are not planning on using the iterator variable inside the loop, you can avoid instantiating it by leveraging the "discard" `_` pattern. For instance, the following code prints out the number of elements in the iterator:
+If you do not use the loop iterator variable, you can avoid instantiating it by leveraging the `_` pattern. For instance, the following code prints out the number of elements in the iterator without instantiating a loop iterator variable:
 
 ```rust
 let mut n: i32 = 0;
@@ -73,12 +73,14 @@ println!("num = {}", n);
 // output: num = 10
 ```
 
-The example above is somewhat contrived, since iterators in Rust have `count()` function, which returns the number of elements in the iterator without the need to count them in a loop:
+The example above is somewhat contrived since iterators in Rust have `count()` function, which returns the number of elements in the iterator without the need to count them in a loop:
 
 ```rust
 println!("num = {}", (0..10).count());
 // output: num = 10
 ```
+
+> You will find that experienced Rust programmers are able to express in very terse iterator language what otherwise would have taken many lines of more conventional looping code. We cover some of these patterns below as we get talk about adaptors, consumers and chaining iterator methods into complex statements. 
 
 ## Digging Deeper
 
