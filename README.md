@@ -276,6 +276,30 @@ for (i, n) in v.iter().enumerate() {
 // v[2] = 3
 ```
 
+There are a few other functions, that make using iterators on vectors particularly helpful.
+
+`min()` and `max()`, for instance, return options, containing minimum and maximum values of the vector elements respectively:
+
+```rust
+let v = vec![3, 5, 0, -2, 3, 4, 1];
+let max = v.iter().max();
+let min = v.iter().min();
+
+println!("max = {:?}, min = {:?}", max, min);
+
+// output: max = Some(5), min = Some(-2)
+```
+
+`sum()` returns a sum of all values in an iterator. The following program leverages the `sum()` method to compute the grade point average of a rather mediocre student:
+
+```rust
+let grades = vec![4, 5, 6, 9, 7, 4, 8];
+let sum: i32 = grades.iter().sum();
+let gpa = sum as f32 / grades.len() as f32;
+
+println!("sum = {}, gpa = {:.2}", sum, gpa);
+```
+
 ## Infinity and Beyond
 
 So far we have dealt with iterators that operated on some finite range of values. Rust generalizes iterators in such a way that it is in fact possible to create an infinite range! Let us consider the following example:
@@ -289,11 +313,15 @@ The `(1..)` defines a range that starts with `1` and increments indefinitely. In
 One particularly helpful pattern involves using the `take()` method to limit the number of items returned by the iterator. The following iterator will return the first 10 items in a sequence of squares of integers that are divisible by 5 without a remainder.
 
 ```rust
-let r = (1..).map(|x| x * x).filter(|x| x % 5 == 0 ).take(10);
-for i in r {
-  print!("{} ", i);
-}
-// output: 25 100 225 400 625 900 1225 1600 2025 2500
+let v = (1..)
+  .map(|x| x * x)
+  .filter(|x| x % 5 == 0 )
+  .take(10)
+  .collect::<Vec<i32>>();
+
+println!("{:?} ", v);
+
+// output: [25, 100, 225, 400, 625, 900, 1225, 1600, 2025, 2500]
 ```
 
 ## Itertools
