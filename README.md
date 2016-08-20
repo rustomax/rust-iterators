@@ -80,13 +80,13 @@ println!("num = {}", (0..10).count());
 // output: num = 10
 ```
 
-> You will find that experienced Rust programmers are able to express in very terse iterator language what otherwise would have taken many lines of more conventional looping code. We cover some of these patterns below as we get talk about adaptors, consumers and chaining iterator methods into complex statements.
+> You will find that experienced Rust programmers are able to express in very terse iterator language what otherwise would have taken many more lines of conventional looping code. We cover some of these patterns below as we talk about adaptors, consumers and chaining iterator methods into complex statements.
 
 ## Digging Deeper
 
 If the basic incremental sequential range does not satisfy your needs, there are plenty of ways in Rust to customize the range iterators. Let's look at a few common ones.
 
-Often, a range needs to be incremented not by `1`, but by a different number. To achieve this, you can modify your range with `step_by()` method, which requires the use of `feature` available in `nightly` compiler only:
+Often, a range needs to be incremented not by `1`, but by a different number. To achieve this, you modify the iterator with the `step_by()` *adaptor* method. It requires the use of `feature` available in `nightly` compiler only:
 
 ```rust
 #![feature(step_by)]
@@ -97,7 +97,7 @@ for i in (0..11).step_by(2) {
 // output: 0 2 4 6 8 10
 ```
 
-The `step_by()` method is not the only way to get a custom increment. The same result can be achieved with a filter containing a *closure*. It doesn't require an unstable Rust `feature` and is in general a lot more flexible. The following iterator produces a series of integers in the given range `(0..20)` that divide by `2` and `3` without a remainder:
+The `step_by()` method is not the only way to get a custom increment. The same result can be achieved with the `filter()` method. It applies a *closure* that can return either `true` or `false` to each element of an iterator and produces a new iterator that only contains elements for which the closure returns `true`. For instance, the following iterator produces a series of integers in the given range `(0..20)` that divide by both `2` and `3` without a remainder:
 
 ```rust
 #![feature(inclusive_range_syntax)]
@@ -107,6 +107,8 @@ for i in (0...20).filter(|x| (x % 2 == 0) && (x % 3 == 0)) {
 }
 // output: 0 6 12 18
 ```
+
+> `filter()` is very flexible and does not require an unstable Rust `feature`.
 
 While by default ranges are incremental, they can easily be reversed using the `rev()` method.
 
@@ -126,7 +128,7 @@ for i in (1..11).map(|x| x * x) {
 // output: 1 4 9 16 25 36 49 64 81 100
 ```
 
-Another powerful method, `fold()`, returns the result of running a closure on all elements of an iterator accumulating result into a single value:
+`fold()` is a very powerful method. It returns the result of applying a special "accumulator" type of closure to all elements of an iterator resulting in a single value:
 
 ```rust
 #![feature(inclusive_range_syntax)]
@@ -154,7 +156,7 @@ println!("result = {}", result);
 // output: result = 55
 ```
 
-Now, isn't the `fold()` version so much more concise and readable?
+Wow! Isn't the `fold()` version so much more concise and readable?
 
 ## Iterating over Arrays
 
@@ -171,7 +173,7 @@ for city in cities.iter() {
 
 ## Combining Iterator Adaptors
 
-While in the previous sections we have covered a good variety of methods allowing you to generate many different types of iterators, the real power of Rust shines when you start combining these approaches.
+While in the previous sections we covered a good variety of methods allowing you to generate many different types of iterators, the real power of Rust shines when you start combining these approaches.
 
 What if you wanted an inclusive range between `10` and `0` that is decremented by `2`? This is easily accomplished by combining a feature and a couple of methods into a single iterator:
 
