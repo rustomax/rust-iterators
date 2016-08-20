@@ -104,32 +104,32 @@ for i in (1..11).map(|x| x * x) {
 // output: 1 4 9 16 25 36 49 64 81 100
 ```
 
-Another powerful method, `fold()`, returns the result of running a closure on all elements of an iterator accumulating its result into a single value. For example, the following `fold()` returns a product of numbers from `1` to `5`.
+Another powerful method, `fold()`, returns the result of running a closure on all elements of an iterator accumulating result into a single value:
 
 ```rust
 #![feature(inclusive_range_syntax)]
 
-let product = (1...5).fold(1, |acc, x| acc * x);
-println!("Product = {}", product);
+let result = (1...5).fold(0, |acc, x| acc + x * x);
+println!("result = {}", result);
 
-// output: Product = 120
+// output: result = 55
 ```
 
-Perhaps the easiest way to understand what `fold()` does in this example is to re-write it in a more conventional procedural fashion:
+Perhaps the easiest way to understand what `fold()` does in this example is to re-write it in a more procedural fashion:
 
 ```rust
 #![feature(inclusive_range_syntax)]
 
-let mut acc = 1;
+let mut acc = 0;
 
 for x in 1...5 {
-  acc = acc * x;
+  acc += x * x;
 }
 
-let product = acc;
-println!("Product = {}", product);
+let result = acc;
+println!("result = {}", result);
 
-// output: Product = 120
+// output: result = 55
 ```
 
 Now, isn't the `fold()` version so much more concise and readable?
