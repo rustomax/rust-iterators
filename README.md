@@ -104,6 +104,36 @@ for i in (1..11).map(|x| x * x) {
 // output: 1 4 9 16 25 36 49 64 81 100
 ```
 
+Another powerful method, `fold()`, returns the result of running a closure on all elements of an iterator accumulating its result into a single value. For example, the following `fold()` returns a product of numbers from `1` to `5`.
+
+```rust
+#![feature(inclusive_range_syntax)]
+
+let product = (1...5).fold(1, |acc, x| acc * x);
+println!("Product = {}", product);
+
+// output: Product = 120
+```
+
+Perhaps the easiest way to understand what `fold()` does in this example is to re-write it in a more conventional procedural fashion:
+
+```rust
+#![feature(inclusive_range_syntax)]
+
+let mut acc = 1;
+
+for x in 1...5 {
+  acc = acc * x;
+}
+
+let product = acc;
+println!("Product = {}", product);
+
+// output: Product = 120
+```
+
+Now, isn't the `fold()` version so much more concise and readable?
+
 ## Iterating over Arrays
 
 Similarly to iterating over ranges, we can iterate over an array. The benefit of this is that arrays can contain values of arbitrary types, not just integrals. The only caveat is that array is **not** an iterator. We need to turn it into an iterator using the `iter()` method.
