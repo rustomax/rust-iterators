@@ -332,7 +332,7 @@ let r = (1..).collect::<Vec<i32>>();
 
 The `(1..)` defines a range that starts with `1` and increments indefinitely. In practice, such program compiles and runs, but eventually crashes with the error message: `fatal runtime error: out of memory`. Well, that's not very practical, you might say. Indeed, by themselves infinite ranges are pretty useless. What makes them useful is combining them with other adaptors and consumers.
 
-One particularly helpful pattern involves using the `take()` method to limit the number of items returned by the iterator. The following iterator will return the first 10 items in a sequence of squares of integers that are divisible by 5 without a remainder.
+One particularly helpful pattern involves using the `take()` method to limit the number of items returned by the iterator. The following iterator will return the first `10` items in a sequence of squares of integers that are divisible by `5` without a remainder.
 
 ```rust
 let v = (1..)
