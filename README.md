@@ -5,7 +5,7 @@ Demonstrates basic Rust iterator use.
 
 The goal of this tutorial is to provide a handy reference to some of the common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/iterators.html). In fact, it is highly encouraged that you peruse these great resources. This tutorial both borrows from and skips over some important points discussed in these documents.
 
-> It is recommended that you have at least cursory familiarity with Rust.
+> To fully take advantage of this tutorial, it is recommended that you have at least cursory familiarity with Rust.
 
 To execute example code:
 
@@ -80,7 +80,7 @@ println!("num = {}", (0..10).count());
 // output: num = 10
 ```
 
-> You will find that experienced Rust programmers are able to express in very terse iterator language what otherwise would have taken many lines of more conventional looping code. We cover some of these patterns below as we get talk about adaptors, consumers and chaining iterator methods into complex statements. 
+> You will find that experienced Rust programmers are able to express in very terse iterator language what otherwise would have taken many lines of more conventional looping code. We cover some of these patterns below as we get talk about adaptors, consumers and chaining iterator methods into complex statements.
 
 ## Digging Deeper
 
@@ -112,7 +112,7 @@ While by default ranges are incremental, they can easily be reversed using the `
 
 ```rust
 for i in (0..11).rev() {
-    print!("{} ", i);
+  print!("{} ", i);
 }
 // output: 10 9 8 7 6 5 4 3 2 1 0
 ```
@@ -254,7 +254,7 @@ for c in char_iter::new('Д', 'П') {
 
 Vector is one of Rust's fundamental structures. By its nature it is well suited to represent series of repetitive items. There are a number of language facilities in Rust that allow using vectors as iterators and vice-versa.
 
-In the simplest case, similarly to how we created an iterator from an array, we can create an iterator from a vector using the `iter()` method:
+In the simplest case, similarly to how we created an iterator from an array, we can create an iterator from a vector using the `iter()` method. In fact this is considered to be the most idiomatic way in Rust to iterate over a vector.
 
 ```rust
 let nums = vec![1, 2, 3, 4, 5];
@@ -275,17 +275,7 @@ println!("{:?}", v);
 // output: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
 
-There are a few ways we can iterate over a vector. A good Rustic style is precisely to use the iterator:
-
-```rust
-let v = vec![1, 2, 3];
-for n in v.iter() {
-  print!("{} ", n);
-}
-// output: 1 2 3
-```
-
-To get both the element and its index, you can use `enumerate()` method, which returns a tuple containing the index and the item on each iteration:
+To get both the element of a vector and its index, you can use `enumerate()` method, which returns a tuple containing the index and the item on each iteration:
 
 ```rust
 let v = vec![1, 2, 3];

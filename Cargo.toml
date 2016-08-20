@@ -5,3 +5,4 @@ authors = ["rustomax"]
 
 [dependencies]
 itertools = "*"
+char-iter = "*"

@@ -2,98 +2,193 @@
 #![feature(inclusive_range_syntax)]
 
 #[macro_use] extern crate itertools;
+extern crate char_iter;
+
 use itertools::Itertools;
+mod fahrtocelc;
 
 fn main() {
 
-    println!("\nBasic Range (exclusive on the right)");
+    // Basic Range (exclusive on the right)
     for i in 1..11 {
-        println!("i = {:3}; i*i = {:3}", i, i * i);
+        print!("{} ", i);
     }
+    println!("");
 
-    println!("\nBasic Range (inclusive on the right). \
-        Note that this requires unstable feature use \
-        #![feature(inclusive_range_syntax)] available in nightly only");
+    // Inclusive range. Requires unstable feature use
+    // #![feature(inclusive_range_syntax)] available in nightly only
     for i in 1...10 {
-        println!("i = {:3}; i*i = {:3}", i, i * i);
+        print!("{} ", i);
     }
+    println!("");
 
-    println!("\nRange with step. Note that this requires unstable \
-        feature use #![feature(step_by)]) available in nightly only");
+    // use of discard "_" pattern
+    let mut n: i32 = 0;
+    for _ in 0..10 {
+        n += 1;
+    }
+    println!("num = {}", n);
+
+    // count()
+    println!("num = {}", (0..10).count());
+
+    // Range with step. Requires unstable feature use
+    // #![feature(step_by)] available in nightly only
     for i in (0..11).step_by(2) {
-        println!("i = {:2}", i);
+        print!("{} ", i);
+    }
+    println!("");
+
+    // Range with step using a filter
+    for i in (0...20).filter(|x| (x % 2 == 0) && (x % 3 == 0)) {
+        print!("{} ", i);
+    }
+    println!("");
+
+    // Reverse range
+    for i in (0..11).rev() {
+        print!("{} ", i);
+    }
+    println!("");
+
+    // map()
+    for i in (1..11).map(|x| x * x) {
+        print!("{} ", i);
+    }
+    println!("");
+
+    // fold()
+    let result = (1...5).fold(0, |acc, x| acc + x * x);
+    println!("result = {}", result);
+
+    let cities = ["Toronto", "New York", "Melbourne"];
+
+    // iterating over arrays
+    for city in cities.iter() {
+        print!("{}, ", city);
+    }
+    println!("");
+
+    // reverse range with a filter
+    for i in (0...10).rev().filter(|x| (x % 2 == 0)) {
+        print!("{} ", i);
+    }
+    println!("");
+
+    // chain()
+    let c = (1..4).chain(6..9);
+    for i in c {
+        print!("{} ", i);
+    }
+    println!("");
+
+    // combo madness
+    let r = (1..20)
+        .filter(|&x| x % 5 == 0)
+        .chain((6..9).rev());
+
+    for i in r {
+        print!("{} ", i);
+    }
+    println!("");
+
+    // zip()
+    let cities = ["Toronto", "New York", "Melbourne"];
+    let populations = [2_615_060, 8_550_405, ‎4_529_500];
+
+    let matrix = cities.iter().zip(populations.iter());
+
+    for (c, p) in matrix {
+        println!("{:10}: population = {}", c, p);
     }
 
-    println!("\nSame can be done with a filter using a closure. \
-        Doesn't require unstable features and is more flexible.");
-    for i in (0..11).filter(|x| x % 2 == 0) {
-        println!("i = {:3}", i);
+    // range of chars
+    for c in char_iter::new('Д', 'П') {
+      print!("{} ", c);
     }
+    println!("");
 
-    println!("\nSame using itertools");
-    for i in (0..11).step(2) {
-        println!("i = {:3}", i);
+    // iterating over vector
+    let nums = vec![1, 2, 3, 4, 5];
+    for i in nums.iter() {
+       print!("{} ", i);
     }
+    println!("");
 
-    println!("\nReverse inclusive range");
-    let r = 1...10;
-    for i in r.rev() {
-        println!("i = {:2}", i);
-    }
-
-    println!("\nReverse range with a filter");
-    for i in (-10..11).rev().filter(|x| x % 3 == 0) {
-        println!("i = {:3}", i);
-    }
-
-    println!("\nExample of a consumer (collect). Produces a vector of i32 values.");
+    // create a vector from an iterator
     let v = (1..11).collect::<Vec<i32>>();
-    println!("v = {:?}", v);
+    println!("{:?}", v);
 
-    println!("\nIterate over the vector. Good Rustic style.");
-    for n in v.iter() {
-        println!("n = {:2}", n);
-    }
-
-    println!("\nC-style loop. This is considered bad form in Rust, \
-        although can be useful if you want to yield not only vector's elements, \
-        but their indexes as well.");
-    for i in 0..v.len() {
-        println!("v[{}] = {:2}", i, v[i]);
-    }
-
-    println!("\nMore ideomatic Rust is to use the enumerate adaptor on the iterator. \
-        This yields tuples of (index, value)");
+    // enumerate()
+    let v = vec![1, 2, 3];
     for (i, n) in v.iter().enumerate() {
-        println!("v[{}] = {:2}", i, n);
+        println!("v[{}] = {}", i, n);
     }
 
-    println!("\nUsing itertools to sort and dedup a vector");
-    let data = vec![1, 4, 2, 3, 3, 2, 5, 1];
-    println!("data = {:?}", data);
-    let p = data
-            .into_iter().sorted()
-            .into_iter().dedup()
-            .into_iter().collect::<Vec<i32>>();
-    println!("data = {:?}", p);
+    // min() and max()
+    let v = vec![3, 5, 0, -2, 3, 4, 1];
+    let max = v.iter().max();
+    let min = v.iter().min();
+    println!("max = {:?}, min = {:?}", max, min);
 
-    println!("\nUsing itertools to find min and max values of the vector");
-    let (min, max) = min_max(&p);
-    println!("min = {}, max = {}", min, max)
+    // sum()
+    let grades = vec![4, 5, 6, 9, 7, 4, 8];
+    let sum: i32 = grades.iter().sum();
+    let gpa = sum as f32 / grades.len() as f32;
+    println!("sum = {}, gpa = {:.2}", sum, gpa);
 
-}
+    // infinite iterator
+    let v = (1..)
+        .map(|x| x * x)
+        .filter(|x| x % 5 == 0 )
+        .take(10)
+        .collect::<Vec<i32>>();
 
-fn min_max(v: &Vec<i32>) -> (i32, i32) {
-    match v.iter().minmax().into_option() {
-        None => panic!("Could not find min and max values"),
-        Some(minmax) => {
-            let (min, max) = minmax;
-            (*min, *max)
-        },
+    println!("{:?} ", v);
+
+    // itertools unique()
+    let data = vec![1, 4, 3, 1, 4, 2, 5];
+    let unique = data.iter().unique();
+
+    for d in unique {
+      print!("{} ", d);
+    }
+    println!("");
+
+    // join()
+    let creatures = vec!["banshee", "basilisk", "centaur"];
+    let list = creatures.iter().join(", ");
+    println!("In the enchanted forest, we found {}.", list);
+
+    // sorted_by()
+    let happiness_index = vec![ ("Austria", 12), ("Costa Rica", 14), ("Norway", 4),
+      ("Australia", 9), ("Netherlands", 7), ("New Zealand", 8), ("United States", 13),
+      ("Israel", 11), ("Denmark", 1), ("Finland", 5), ("Iceland", 3),
+      ("Sweden", 10), ("Canada", 6), ("Puerto Rico", 15), ("Switzerland", 2) ];
+
+    let top_contries = happiness_index
+      .into_iter()
+      .sorted_by(|a, b| (&a.1).cmp(&b.1))
+      .into_iter()
+      .take(5);
+
+    for (country, rating) in top_contries {
+      println!("# {}: {}", rating, country);
+    }
+
+    // our own iterator
+    let ftc = fahrtocelc::FahrToCelc::new(0.0, 5.0);
+    let temp_table = ftc.take(5);
+    for (f, c) in temp_table {
+        println!("{:7.2} °F = {:7.2} °C", f, c);
     }
 }
 
 #[test]
-fn test_min_max() {
-    assert_eq!(min_max(&vec![1i32, 4, 2, 4, 5]), (1, 5));
+fn test_ftc() {
+    let ftc = fahrtocelc::FahrToCelc::new(0.0, 5.0);
+    for (f, c) in ftc.skip(1).take(1) {
+        assert_eq!(f, 5.0);
+        assert_eq!(c, -15.0);
+    }
 }
