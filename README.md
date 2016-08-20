@@ -5,23 +5,23 @@ Demonstrates basic Rust iterator use.
 
 The goal of this tutorial is to provide a handy reference to some of the common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/iterators.html). In fact, it is highly encouraged that you peruse these great resources. This tutorial both borrows from and skips over some important points discussed in these documents.
 
-> This tutorial assumes that you already have at least cursory familiarity with Rust.<br/>
+> It is recommended that you have at least cursory familiarity with Rust.
 
-To execute examples in this tutorial:
+To execute example code:
 
 ```sh
 git clone https://github.com/rustomax/rust-iterators.git
 cd rust-iterators/
 cargo run
 ```
-> Certain features (`step_by()` and inclusive range) require `nightly` compiler. If you are on `stable`, in order to compile examples you have to comment out relevant code sections.
+> Certain features (`step_by()` and inclusive range) require `nightly` compiler. If you are on `stable`, in order to compile the examples, you have to comment out relevant code sections.
 
 ## Contents
 - [Introduction](#introduction)
 - [Basic Ranges](#basic-ranges)
 - [Digging Deeper](#digging-deeper)
 - [Iterating over Arrays](#iterating-over-arrays)
-- [Combining Iterator Adapters](#combining-iterator-adapters)
+- [Combining Iterator Adaptors](#combining-iterator-adaptors)
 - [Ranges of Characters](#ranges-of-characters)
 - [Iterating over Vectors](#iterating-over-vectors)
 - [Infinity and Beyond](#infinity-and-beyond)
@@ -115,7 +115,7 @@ for i in (0..11).rev() {
 // output: 10 9 8 7 6 5 4 3 2 1 0
 ```
 
-Another common iterator adapter, `map()`, applies a closure to each element, and returns the resulting iterator. Here is an example of an iterator that produces a sequence of squares of numbers from `1` to `10`:
+Another common iterator adaptor, `map()`, applies a closure to each element, and returns the resulting iterator. Here is an example of an iterator that produces a sequence of squares of numbers from `1` to `10`:
 
 ```rust
 for i in (1..11).map(|x| x * x) {
@@ -167,7 +167,7 @@ for city in cities.iter() {
 // output: Toronto, New York, Melbourne,
 ```
 
-## Combining Iterator Adapters
+## Combining Iterator Adaptors
 
 While in the previous sections we have covered a good variety of methods allowing you to generate many different types of iterators, the real power of Rust shines when you start combining these approaches.
 
@@ -263,9 +263,9 @@ for i in nums.iter() {
 // output: 1 2 3 4 5
 ```
 
-Now, let's do the opposite - create a vector from an iterator. In order to do that we need what is called a *consumer*. Consumers force lazy iterators to actually produce values.
+Now, let's do the opposite - create a vector from an iterator. In order to do that we need what is called a *consumer*. Consumers force **lazy** iterators to actually produce values.
 
-A basic consumer is `collect()` - a method that takes values from an iterator and converts them into a collection of required type. Here we are taking a range of numbers from 1 to 10 and transforming it into a vector of i32:
+`collect()` is a common consumer. It takes values from an iterator and converts them into a collection of required type. Below we are taking a range of numbers from `1` to `10` and transforming it into a vector of `i32`:
 
 ```rust
 let v = (1..11).collect::<Vec<i32>>();
@@ -330,7 +330,7 @@ So far we have dealt with iterators that operated on some finite range of values
 let r = (1..).collect::<Vec<i32>>();
 ```
 
-The `(1..)` defines a range that starts with `1` and increments indefinitely. In practice, such program compiles and runs, but eventually crashes with the error message: `fatal runtime error: out of memory`. Well, that's not very practical, you might say. Indeed, by themselves infinite ranges are pretty useless. What makes them useful is combining them with other adapters and consumers.
+The `(1..)` defines a range that starts with `1` and increments indefinitely. In practice, such program compiles and runs, but eventually crashes with the error message: `fatal runtime error: out of memory`. Well, that's not very practical, you might say. Indeed, by themselves infinite ranges are pretty useless. What makes them useful is combining them with other adaptors and consumers.
 
 One particularly helpful pattern involves using the `take()` method to limit the number of items returned by the iterator. The following iterator will return the first 10 items in a sequence of squares of integers that are divisible by 5 without a remainder.
 
@@ -348,7 +348,7 @@ println!("{:?} ", v);
 
 ## Itertools
 
-The [itertools crate](http://bluss.github.io/rust-itertools/doc/itertools/trait.Itertools.html) contains powerful additional iterator adapters. Below are some examples.
+The [itertools crate](http://bluss.github.io/rust-itertools/doc/itertools/trait.Itertools.html) contains powerful additional iterator adaptors. Below are some examples.
 
 To use `itertools`, add the following to your `Cargo.toml`:
 
@@ -357,7 +357,7 @@ To use `itertools`, add the following to your `Cargo.toml`:
 itertools = "*"
 ```
 
-The `unique()` adapter eliminates duplicates from an iterator. The duplicates do not need to be sequential.
+The `unique()` adaptor eliminates duplicates from an iterator. The duplicates do not need to be sequential.
 
 ```rust
 extern crate itertools;
@@ -373,7 +373,7 @@ for d in unique {
 //output: 1 4 3 2 5
 ```  
 
-The `join()` adapter combines iterator elements into a single string with a separator in between the elements.
+The `join()` adaptor combines iterator elements into a single string with a separator in between the elements.
 
 ```rust
 extern crate itertools;
@@ -386,7 +386,7 @@ println!("In the enchanted forest, we found {}.", list);
 // output: In the enchanted forest, we found banshee, basilisk, centaur.
 ```   
 
-The `sorted_by()` adapter applies custom sorting order to iterator elements, returning a sorted vector. The following program will print out top 5 happiest countries, according to 2016 World Happiness Index.
+The `sorted_by()` adaptor applies custom sorting order to iterator elements, returning a sorted vector. The following program will print out top 5 happiest countries, according to 2016 World Happiness Index.
 
 > `sorted_by()` uses [Ordering trait](https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html) to sort elements.
 
