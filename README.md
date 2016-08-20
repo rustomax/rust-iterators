@@ -263,7 +263,7 @@ for i in nums.iter() {
 // output: 1 2 3 4 5
 ```
 
-Now, let's do the opposite - create a vector from an iterator. In order to do that we need what is called a *consumer*. Consumers force **lazy** iterators to actually produce values.
+Now, let's do the opposite - create a vector from an iterator. In order to do that we need what is called a *consumer*. Consumers force *lazy* iterators to actually produce values.
 
 `collect()` is a common consumer. It takes values from an iterator and converts them into a collection of required type. Below we are taking a range of numbers from `1` to `10` and transforming it into a vector of `i32`:
 
@@ -455,7 +455,7 @@ type Item = (f32, f32);
 fn next (&mut self) -> Option<(f32, f32)>
 ```
 
-The `next()` function typically also does some internal housekeeping. Ours will keep track of the last Fahrenheit temperature returned, so that we can increment it by `step` on subsequent iteration. By the way, making these modifications to internal fields is the reason why we need to pass a *mutable* reference to `self` as a parameter to `next()`.
+The `next()` function typically also does some internal housekeeping. Ours increments Fahrenheit temperature `fahr` by `step` so that it can be returned on subsequent iteration. By the way, making these modifications to internal fields is the reason why we need to pass a *mutable* reference to `self` as a parameter to `next()`.
 
 Combining things together, here is the `Iterator` trait implementation:
 
