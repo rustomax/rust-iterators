@@ -4,5 +4,5 @@ version = "0.1.0"
 authors = ["rustomax"]
 
 [dependencies]
-itertools = "*"
-char-iter = "*"
+itertools = "0.4"
+char-iter = "0.1"
