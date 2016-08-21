@@ -1,4 +1,5 @@
 # rust-iterators
+
 Demonstrates basic Rust iterator use.
 
 [![Build Status](https://travis-ci.org/rustomax/rust-iterators.svg?branch=master)](https://travis-ci.org/rustomax/rust-iterators)
@@ -14,9 +15,11 @@ git clone https://github.com/rustomax/rust-iterators.git
 cd rust-iterators/
 cargo run
 ```
+
 > Certain features (`step_by()` and inclusive range) require `nightly` compiler. If you are on `stable`, in order to compile the examples, you have to comment out relevant code sections.
 
 ## Contents
+
 - [Introduction](#introduction)
 - [Basic Ranges](#basic-ranges)
 - [Digging Deeper](#digging-deeper)
@@ -236,9 +239,9 @@ Programs that manipulate strings or text often require the ability to iterate ov
 
 To use the `char_iter`, put the following in your `Cargo.toml`
 
-```
+```toml
 [dependencies]
-char-iter = "*"
+char-iter = "0.1"
 ```
 
 And then generate a character range with `char_iter::new()` method:
@@ -346,9 +349,9 @@ The [itertools crate](http://bluss.github.io/rust-itertools/doc/itertools/trait.
 
 To use `itertools`, add the following to your `Cargo.toml`:
 
-```
+```toml
 [dependencies]
-itertools = "*"
+itertools = "0.4"
 ```
 
 The `unique()` adaptor eliminates duplicates from an iterator. The duplicates do not need to be sequential.
@@ -365,7 +368,7 @@ for d in unique {
 }
 
 //output: 1 4 3 2 5
-```  
+```
 
 The `join()` adaptor combines iterator elements into a single string with a separator in between the elements.
 
@@ -378,7 +381,7 @@ let list = creatures.iter().join(", ");
 println!("In the enchanted forest, we found {}.", list);
 
 // output: In the enchanted forest, we found banshee, basilisk, centaur.
-```   
+```
 
 The `sorted_by()` adaptor applies custom sorting order to iterator elements, returning a sorted vector. The following program will print out top 5 happiest countries, according to 2016 World Happiness Index.
 
@@ -409,7 +412,6 @@ for (country, rating) in top_contries {
 // # 3: Iceland
 // # 4: Norway
 // # 5: Finland
-
 ```
 
 ## Creating Your Own Iterators
