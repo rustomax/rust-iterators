@@ -36,7 +36,7 @@ cargo run
 Life is repetitive and most things in it come as series of items. Programmatically we often need to count, enumerate, and iterate over these sequences. There are several ways to generate repetition in programming languages. One of the most prominent constructs is C-style `for` loop with familiar syntax:
 
 ```c
-for ( x = 0; x < 10; x++ ) {
+for ( x = 0; x < 10; ++x ) {
   // do something
 }
 ```
