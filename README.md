@@ -266,6 +266,28 @@ for i in nums.iter() {
 // output: 1 2 3 4 5
 ```
 
+As a matter of fact, the pattern above is so common that rust provides syntactic sugar for it in the form of the reference operator `&`.
+
+```rust
+let nums = vec![1, 2, 3, 4, 5];
+for i in &nums {
+   print!("{} ", i);
+}
+// output: 1 2 3 4 5
+```
+
+Notice that the borrows above are immutable. In other words, they are read-only. If we want to make changes to our vector, we have to use the mutable borrow `&mut`. For instance, the following code will mutably iterate over a vector doubling each element in the process.
+
+```rust
+let mut nums = vec![1, 2, 3, 4, 5];
+for i in &mut nums {
+    *i *= 2;
+}
+println!("{:?}", nums);
+
+//output: [2, 4, 6, 8, 10]
+```
+
 Now, let's do the opposite - create a vector from an iterator. In order to do that we need what is called a *consumer*. Consumers force *lazy* iterators to actually produce values.
 
 `collect()` is a common consumer. It takes values from an iterator and converts them into a collection of required type. Below we are taking a range of numbers from `1` to `10` and transforming it into a vector of `i32`:

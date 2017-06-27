@@ -114,6 +114,20 @@ fn main() {
     }
     println!("");
 
+    // iterating over vector by reference
+    let nums = vec![1, 2, 3, 4, 5];
+    for i in &nums {
+       print!("{} ", i);
+    }
+    println!("");
+
+    // mutable borrow
+    let mut nums = vec![1, 2, 3, 4, 5];
+    for i in &mut nums {
+        *i *= 2;
+    }
+    println!("{:?}", nums);
+
     // create a vector from an iterator
     let v = (1..11).collect::<Vec<i32>>();
     println!("{:?}", v);
