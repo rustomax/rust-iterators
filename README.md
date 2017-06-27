@@ -4,7 +4,7 @@ Demonstrates basic Rust iterator use.
 
 [![Build Status](https://travis-ci.org/rustomax/rust-iterators.svg?branch=master)](https://travis-ci.org/rustomax/rust-iterators)
 
-The goal of this tutorial is to provide a handy reference to some of the common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/iterators.html). In fact, this tutorial heavily relies on both resources.
+The goal of this tutorial is to provide a handy reference to some of the common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/second-edition/ch13-02-iterators.html). In fact, this tutorial relies on both resources.
 
 > To take full advantage of the material described here, it is recommended that you have at least cursory familiarity with Rust.
 
