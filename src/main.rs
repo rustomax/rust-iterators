@@ -1,6 +1,6 @@
-#![feature(step_by)]
 #![feature(inclusive_range_syntax)]
 
+#[allow(unused_imports)]
 #[macro_use] extern crate itertools;
 extern crate char_iter;
 
@@ -32,14 +32,13 @@ fn main() {
     // count()
     println!("num = {}", (0..10).count());
 
-    // Range with step. Requires unstable feature use
-    // #![feature(step_by)] available in nightly only
-    for i in (0..11).step_by(2) {
-        print!("{} ", i);
+    // Range with step using a filter
+    for i in (0..21).filter(|x| (x % 2 == 0)) {
+      print!("{} ", i);
     }
     println!("");
 
-    // Range with step using a filter
+    // More complex range using a filter
     for i in (0...20).filter(|x| (x % 2 == 0) && (x % 3 == 0)) {
         print!("{} ", i);
     }
@@ -152,6 +151,12 @@ fn main() {
 
     for d in unique {
       print!("{} ", d);
+    }
+    println!("");
+
+    // Range with step
+    for i in (0..11).step(2) {
+        print!("{} ", i);
     }
     println!("");
 

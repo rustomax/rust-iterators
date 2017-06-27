@@ -16,7 +16,7 @@ cd rust-iterators/
 cargo run
 ```
 
-> Certain features (`step_by()` and inclusive range) require `nightly` compiler. If you are on `stable`, in order to compile the examples, you have to comment out relevant code sections.
+> The inclusive range feature requires `nightly` compiler. If you are on `stable`, in order to compile the examples, you must comment out relevant code sections.
 
 ## Contents
 
@@ -89,29 +89,25 @@ println!("num = {}", (0..10).count());
 
 If the basic incremental sequential range does not satisfy your needs, there are plenty of ways in Rust to customize the range iterators. Let's look at a few common ones.
 
-Often, a range needs to be incremented not by `1`, but by a different number. To achieve this, you modify the iterator with the `step_by()` *adaptor* method. It requires the use of `feature` available in `nightly` compiler only:
+Often, a range needs to be incremented not by `1`, but by a different number. This can be achieved with the `filter()` method. It applies a *closure* that can return either `true` or `false` to each element of an iterator and produces a new iterator that only contains elements for which the closure returns `true`.
+
+The following iterator will produce a sequence of even numbers between 0 and 20.
 
 ```rust
-#![feature(step_by)]
-
-for i in (0..11).step_by(2) {
+for i in (0..21).filter(|x| (x % 2 == 0)) {
   print!("{} ", i);
 }
-// output: 0 2 4 6 8 10
+// output: 0 2 4 6 8 10 12 14 16 18 20
 ```
 
-The `step_by()` method is not the only way to get a custom increment. The same result can be achieved with the `filter()` method. It applies a *closure* that can return either `true` or `false` to each element of an iterator and produces a new iterator that only contains elements for which the closure returns `true`. For instance, the following iterator produces a series of integers in the given range `(0..20)` that divide by both `2` and `3` without a remainder:
+Because `filter()` uses closures, it is very flexible and can be used to produce iterators that evaluate complex conditions. For instance, the following iterator produces a series of integers in the range between 0 and 20 that divide by both `2` and `3` without a remainder:
 
 ```rust
-#![feature(inclusive_range_syntax)]
-
-for i in (0...20).filter(|x| (x % 2 == 0) && (x % 3 == 0)) {
+for i in (0..21).filter(|x| (x % 2 == 0) && (x % 3 == 0)) {
   print!("{} ", i);
 }
 // output: 0 6 12 18
 ```
-
-> `filter()` is very flexible and does not require an unstable Rust `feature`.
 
 While by default ranges are incremental, they can easily be reversed using the `rev()` method.
 
@@ -131,7 +127,7 @@ for i in (1..11).map(|x| x * x) {
 // output: 1 4 9 16 25 36 49 64 81 100
 ```
 
-`fold()` is a very powerful method. It returns the result of applying a special "accumulator" type of closure to all elements of an iterator resulting in a single value:
+`fold()` is a very powerful method. It returns the result of applying a special "accumulator" type of closure to all elements of an iterator resulting in a single value. The following iterator produces a sum of squares of numbers from 1 to 5.
 
 ```rust
 #![feature(inclusive_range_syntax)]
@@ -142,7 +138,7 @@ println!("result = {}", result);
 // output: result = 55
 ```
 
-Perhaps the easiest way to understand what `fold()` does in this example is to re-write it in a more procedural fashion:
+Perhaps the easiest way to understand what is happening here is to rewrite the example above in a more procedural fashion:
 
 ```rust
 #![feature(inclusive_range_syntax)]
@@ -351,7 +347,20 @@ To use `itertools`, add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-itertools = "0.4"
+itertools = "0.6"
+```
+
+Remember how we used `filter()` to produce a range of even numbers? Itertools has a handy `step()` method for that.
+
+```rust
+extern crate itertools;
+use itertools::Itertools;
+
+for i in (0..11).step(2) {
+    print!("{} ", i);
+}
+
+//output: 0 2 4 6 8 10
 ```
 
 The `unique()` adaptor eliminates duplicates from an iterator. The duplicates do not need to be sequential.
@@ -445,13 +454,13 @@ Finally, we program the behavior of the iterator by implementing the `Iterator` 
 type Item = (f32, f32);
 ```
 
-- Function `next()` that actually generates the next `Item`. `next()` takes a mutable reference to `self` and returns an `Option` encapsulating the next value. The reason why we have to return an `Option` and not the item itself is because many iterators need to account for the situation where they have reached the end of the sequence, in which case they return `None`. Since our iterator generates an infinite sequence, our `next()` method will always return `Some(Item)`, more specifically, `Some((f32, f32))`. Thus, our `next()` function declaration looks like this:
+- Function `next()` that actually generates the next `Item`. `next()` takes a mutable reference to `self` and returns an `Option` encapsulating the next value. The reason why we have to return an `Option` and not the item itself is because many iterators need to account for the situation where they have reached the end of the sequence, in which case they return `None`. Since our iterator generates an infinite sequence, our `next()` method will always return `Option<Self::Item>`. Thus, our `next()` function declaration looks like this:
 
 ```rust
-fn next (&mut self) -> Option<(f32, f32)>
+fn next (&mut self) -> Option<Self::Item>
 ```
 
-The `next()` function typically also does some internal housekeeping. Ours increments Fahrenheit temperature `fahr` by `step` so that it can be returned on subsequent iteration. By the way, making these modifications to internal fields is the reason why we need to pass a *mutable* reference to `self` as a parameter to `next()`.
+The `next()` function typically also does some internal housekeeping. Ours increments Fahrenheit temperature `fahr` by `step` so that it can be returned on subsequent iteration. Making these modifications to internal fields is the reason why we need to pass a *mutable* reference to `self` as a parameter to `next()`.
 
 Combining things together, here is the `Iterator` trait implementation:
 
@@ -459,7 +468,7 @@ Combining things together, here is the `Iterator` trait implementation:
 impl Iterator for FahrToCelc {
   type Item = (f32, f32);
 
-  fn next (&mut self) -> Option<(f32, f32)> {
+  fn next (&mut self) -> Option<Self::Item> {
     let curr_fahr = self.fahr;
     let curr_celc = (self.fahr - 32.0) / 1.8;
     self.fahr = self.fahr + self.step;
@@ -485,7 +494,7 @@ impl FahrToCelc {
 impl Iterator for FahrToCelc {
   type Item = (f32, f32);
 
-  fn next (&mut self) -> Option<(f32, f32)> {
+  fn next (&mut self) -> Option<Self::Item> {
     let curr_fahr = self.fahr;
     let curr_celc = (self.fahr - 32.0) / 1.8;
     self.fahr = self.fahr + self.step;

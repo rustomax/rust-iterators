@@ -3,7 +3,7 @@ name = "iterators"
 version = "0.1.0"
 dependencies = [
  "char-iter 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "itertools 0.4.17 (registry+https://github.com/rust-lang/crates.io-index)",
+ "itertools 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -12,7 +12,19 @@ version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
-name = "itertools"
-version = "0.4.17"
+name = "either"
+version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
+[[package]]
+name = "itertools"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "either 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[metadata]
+"checksum char-iter 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "03d6bd66ffe2fce2488985b469557d94e5a7b9b94d8ec1e566e3b6cadd5e41c8"
+"checksum either 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "18785c1ba806c258137c937e44ada9ee7e69a37e3c72077542cd2f069d78562a"
+"checksum itertools 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "772a0928a97246167d59a2a4729df5871f1327ab8b36fd24c4224b229cb47b99"

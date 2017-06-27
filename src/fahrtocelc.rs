@@ -15,7 +15,7 @@ impl FahrToCelc {
 impl Iterator for FahrToCelc {
     type Item = (f32, f32);
 
-    fn next (&mut self) -> Option<(f32, f32)> {
+    fn next (&mut self) -> Option<Self::Item> {
         let curr_fahr = self.fahr;
         let curr_celc = (self.fahr - 32.0) / 1.8;
         self.fahr = self.fahr + self.step;
