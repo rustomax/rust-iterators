@@ -297,7 +297,7 @@ println!("{:?}", nums);
 ```
 
 > A slight digression. What if we wanted to use mutable iterator to add elements to the vector like so:
-
+>
 >  ```rust
 >  let mut nums = vec![1, 2, 3, 4, 5];
 >  for i in &mut nums {
@@ -305,7 +305,7 @@ println!("{:?}", nums);
 >  }
 >  println!("{:?}", nums);
 >  ```
-
+>
 > This won't compile with the error message `cannot borrow nums as mutable more than once at a time.` You see, our iterator (instantiated in the `for` loop) already borrowed `nums` as mutable. The `push` expression tries to do that again, which is prohibited in rust. This is rust's famous safety at work. If we could `push` something into the vector, while iterating over it, this would invalidate the iterator causing undefined behavior. Rust prevents this from happening at compile time. Not only iterators are powerful, but they are also super safe.
 
 Now, let's do the opposite - create a vector from an iterator. In order to do that we need what is called a *consumer*. Consumers force *lazy* iterators to actually produce values.
