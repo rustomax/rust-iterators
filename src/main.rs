@@ -128,6 +128,11 @@ fn main() {
     }
     println!("{:?}", nums);
 
+    // same as above, but using map()
+    let nums = vec![1, 2, 3, 4, 5];
+    let nums = nums.iter().map(|x| x * 2);
+    println!("{:?}", nums);
+
     // create a vector from an iterator
     let v = (1..11).collect::<Vec<i32>>();
     println!("{:?}", v);

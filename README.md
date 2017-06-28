@@ -288,6 +288,26 @@ println!("{:?}", nums);
 //output: [2, 4, 6, 8, 10]
 ```
 
+Typically, though, you wouldn't use syntax above. Now that you are fluent with iterators, you'd use `map()` instead, right?
+
+```rust
+let nums = vec![1, 2, 3, 4, 5];
+let nums = nums.iter().map(|x| x * x);
+println!("{:?}", nums);
+```
+
+> A slight digression. What if we wanted to use mutable iterator to add elements to the vector like so:
+
+>  ```rust
+>  let mut nums = vec![1, 2, 3, 4, 5];
+>  for i in &mut nums {
+>      nums.push(*i);
+>  }
+>  println!("{:?}", nums);
+>  ```
+
+> This won't compile with the error message `cannot borrow nums as mutable more than once at a time.` You see, our iterator (instantiated in the `for` loop) already borrowed `nums` as mutable. The `push` expression tries to do that again, which is prohibited in rust. This is rust's famous safety at work. If we could `push` something into the vector, while iterating over it, this would invalidate the iterator causing undefined behavior. Rust prevents this from happening at compile time. Not only iterators are powerful, but they are also super safe.
+
 Now, let's do the opposite - create a vector from an iterator. In order to do that we need what is called a *consumer*. Consumers force *lazy* iterators to actually produce values.
 
 `collect()` is a common consumer. It takes values from an iterator and converts them into a collection of required type. Below we are taking a range of numbers from `1` to `10` and transforming it into a vector of `i32`:
