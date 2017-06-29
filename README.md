@@ -294,6 +294,8 @@ However, now that you are an iterator ninja, you wouldn't use the `for` loop syn
 let nums = vec![1, 2, 3, 4, 5];
 let nums = nums.iter().map(|x| x * 2);
 println!("{:?}", nums);
+
+//output: [2, 4, 6, 8, 10]
 ```
 
 > A slight digression. What if we wanted to use mutable iterator to add elements to the vector like so:
