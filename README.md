@@ -288,11 +288,11 @@ println!("{:?}", nums);
 //output: [2, 4, 6, 8, 10]
 ```
 
-Typically, though, you wouldn't use syntax above. Now that you are fluent with iterators, you'd use `map()` instead, right?
+However, now that you are an iterator ninja, you wouldn't use the `for` loop syntax above. You'd go with a `map()` instead, right?
 
 ```rust
 let nums = vec![1, 2, 3, 4, 5];
-let nums = nums.iter().map(|x| x * x);
+let nums = nums.iter().map(|x| x * 2);
 println!("{:?}", nums);
 ```
 
