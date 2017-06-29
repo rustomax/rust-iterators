@@ -383,7 +383,7 @@ println!("{:?} ", v);
 
 ## Itertools
 
-The [itertools crate](http://bluss.github.io/rust-itertools/doc/itertools/trait.Itertools.html) contains powerful additional iterator adaptors. Below are some examples.
+The [itertools crate](https://docs.rs/itertools/0.6.0/itertools) contains powerful additional iterator adaptors. Below are some examples.
 
 To use `itertools`, add the following to your `Cargo.toml`:
 
