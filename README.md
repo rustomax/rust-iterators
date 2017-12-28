@@ -54,12 +54,12 @@ for i in 1..11 {
 // output: 1 2 3 4 5 6 7 8 9 10
 ```
 
- The code above will print a series of numbers from `1` to `10`, and not include the last number `11`. In other words, the `..` produces an iterator that is inclusive on the left and exclusive on the right. In order to get a range that is inclusive on both ends, you use the `...` notation. The inclusive range is currently an unstable feature, requiring `nightly` compiler:
+ The code above will print a series of numbers from `1` to `10`, and not include the last number `11`. In other words, the `..` produces an iterator that is inclusive on the left and exclusive on the right. In order to get a range that is inclusive on both ends, you use the `..=` notation. The inclusive range is currently an unstable feature, requiring `nightly` compiler:
 
 ```rust
 #![feature(inclusive_range_syntax)]
 
-for i in 1...10 {
+for i in 1..=10 {
   print!("{} ", i);
 }
 // output: 1 2 3 4 5 6 7 8 9 10
@@ -132,7 +132,7 @@ for i in (1..11).map(|x| x * x) {
 ```rust
 #![feature(inclusive_range_syntax)]
 
-let result = (1...5).fold(0, |acc, x| acc + x * x);
+let result = (1..=5).fold(0, |acc, x| acc + x * x);
 println!("result = {}", result);
 
 // output: result = 55
@@ -145,7 +145,7 @@ Perhaps the easiest way to understand what is happening here is to rewrite the e
 
 let mut acc = 0;
 
-for x in 1...5 {
+for x in 1..=5 {
   acc += x * x;
 }
 
@@ -179,7 +179,7 @@ What if you wanted an inclusive range between `10` and `0` that is decremented b
 ```rust
 #![feature(inclusive_range_syntax)]
 
-for i in (0...10).rev().filter(|x| (x % 2 == 0)) {
+for i in (0..=10).rev().filter(|x| (x % 2 == 0)) {
   print!("{} ", i);
 }
 // output: 10 8 6 4 2 0

@@ -17,7 +17,7 @@ fn main() {
 
     // Inclusive range. Requires unstable feature use
     // #![feature(inclusive_range_syntax)] available in nightly only
-    for i in 1...10 {
+    for i in 1..=10 {
         print!("{} ", i);
     }
     println!("");
@@ -39,7 +39,7 @@ fn main() {
     println!("");
 
     // More complex range using a filter
-    for i in (0...20).filter(|x| (x % 2 == 0) && (x % 3 == 0)) {
+    for i in (0..=20).filter(|x| (x % 2 == 0) && (x % 3 == 0)) {
         print!("{} ", i);
     }
     println!("");
@@ -57,7 +57,7 @@ fn main() {
     println!("");
 
     // fold()
-    let result = (1...5).fold(0, |acc, x| acc + x * x);
+    let result = (1..=5).fold(0, |acc, x| acc + x * x);
     println!("result = {}", result);
 
     let cities = ["Toronto", "New York", "Melbourne"];
@@ -69,7 +69,7 @@ fn main() {
     println!("");
 
     // reverse range with a filter
-    for i in (0...10).rev().filter(|x| (x % 2 == 0)) {
+    for i in (0..=10).rev().filter(|x| (x % 2 == 0)) {
         print!("{} ", i);
     }
     println!("");
