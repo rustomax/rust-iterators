@@ -231,7 +231,7 @@ for (c, p) in matrix {
 
 ## Ranges of Characters
 
-Programs that manipulate strings or text often require the ability to iterate over a range of characters. `char_iter` crate provides convenient way to generate such ranges. `char_iter` supports Unicode characters.
+Programs that manipulate strings or text often require the ability to iterate over a range of characters. The [char_iter crate](https://docs.rs/char-iter/0.1.0/char_iter/) provides convenient way to generate such ranges. `char_iter` supports Unicode characters.
 
 To use the `char_iter`, put the following in your `Cargo.toml`
 
