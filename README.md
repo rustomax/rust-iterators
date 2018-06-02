@@ -16,8 +16,6 @@ cd rust-iterators/
 cargo run
 ```
 
-> The inclusive range feature requires `nightly` compiler. If you are on `stable`, in order to compile the examples, you must comment out relevant code sections.
-
 ## Contents
 
 - [Introduction](#introduction)
@@ -54,11 +52,9 @@ for i in 1..11 {
 // output: 1 2 3 4 5 6 7 8 9 10
 ```
 
- The code above will print a series of numbers from `1` to `10`, and not include the last number `11`. In other words, the `..` produces an iterator that is inclusive on the left and exclusive on the right. In order to get a range that is inclusive on both ends, you use the `..=` notation. The inclusive range is currently an unstable feature, requiring `nightly` compiler:
+ The code above will print a series of numbers from `1` to `10`, and not include the last number `11`. In other words, the `..` produces an iterator that is inclusive on the left and exclusive on the right. In order to get a range that is inclusive on both ends, you use the `..=` notation:
 
 ```rust
-#![feature(inclusive_range_syntax)]
-
 for i in 1..=10 {
   print!("{} ", i);
 }
@@ -130,8 +126,6 @@ for i in (1..11).map(|x| x * x) {
 `fold()` is a very powerful method. It returns the result of applying a special "accumulator" type of closure to all elements of an iterator resulting in a single value. The following iterator produces a sum of squares of numbers from 1 to 5.
 
 ```rust
-#![feature(inclusive_range_syntax)]
-
 let result = (1..=5).fold(0, |acc, x| acc + x * x);
 println!("result = {}", result);
 
@@ -141,8 +135,6 @@ println!("result = {}", result);
 Perhaps the easiest way to understand what is happening here is to rewrite the example above in a more procedural fashion:
 
 ```rust
-#![feature(inclusive_range_syntax)]
-
 let mut acc = 0;
 
 for x in 1..=5 {
@@ -174,11 +166,9 @@ for city in cities.iter() {
 
 While in the previous sections we covered a good variety of methods allowing you to generate many different types of iterators, the real power of Rust shines when you start combining these approaches.
 
-What if you wanted an inclusive range between `10` and `0` that is decremented by `2`? This is easily accomplished by combining a feature and a couple of methods into a single iterator:
+What if you wanted an inclusive range between `10` and `0` that is decremented by `2`? This is easily accomplished by combining a couple of methods into a single iterator:
 
 ```rust
-#![feature(inclusive_range_syntax)]
-
 for i in (0..=10).rev().filter(|x| (x % 2 == 0)) {
   print!("{} ", i);
 }

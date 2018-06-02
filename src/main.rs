@@ -1,5 +1,3 @@
-#![feature(inclusive_range_syntax)]
-
 #[allow(unused_imports)]
 #[macro_use] extern crate itertools;
 extern crate char_iter;
@@ -15,8 +13,7 @@ fn main() {
     }
     println!("");
 
-    // Inclusive range. Requires unstable feature use
-    // #![feature(inclusive_range_syntax)] available in nightly only
+    // Inclusive range
     for i in 1..=10 {
         print!("{} ", i);
     }
