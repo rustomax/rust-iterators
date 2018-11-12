@@ -127,7 +127,7 @@ fn main() {
 
     // same as above, but using map()
     let nums = vec![1, 2, 3, 4, 5];
-    let nums = nums.iter().map(|x| x * 2);
+    let nums = nums.iter().map(|x| x * 2).collect::<Vec<i32>>();
     println!("{:?}", nums);
 
     // create a vector from an iterator

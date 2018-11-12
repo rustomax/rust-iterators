@@ -282,7 +282,7 @@ However, now that you are an iterator ninja, you wouldn't use the `for` loop syn
 
 ```rust
 let nums = vec![1, 2, 3, 4, 5];
-let nums = nums.iter().map(|x| x * 2);
+let nums = nums.iter().map(|x| x * 2).collect::<Vec<i32>>();
 println!("{:?}", nums);
 
 //output: [2, 4, 6, 8, 10]
