@@ -434,7 +434,11 @@ The `sorted_by()` adaptor applies custom sorting order to iterator elements, ret
 extern crate itertools;
 use itertools::Itertools;
 
-let happiness_index = vec![ ("Canada", 7), ("Iceland", 4), ("Netherlands", 6), ("Finland", 1), ("New Zealand", 8), ("Denmark", 3), ("Norway", 2), ("Sweden", 9), ("Switzerland", 5)];
+let happiness_index = vec![
+    ("Canada", 7), ("Iceland", 4), ("Netherlands", 6),
+    ("Finland", 1), ("New Zealand", 8), ("Denmark", 3),
+    ("Norway", 2), ("Sweden", 9), ("Switzerland", 5)
+  ];
 
 let top_contries = happiness_index
   .into_iter()
