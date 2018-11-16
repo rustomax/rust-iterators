@@ -426,7 +426,7 @@ println!("In the enchanted forest, we found {}.", list);
 // output: In the enchanted forest, we found banshee, basilisk, centaur.
 ```
 
-The `sorted_by()` adaptor applies custom sorting order to iterator elements, returning a sorted vector. The following program will print out top 5 happiest countries, according to 2016 World Happiness Index.
+The `sorted_by()` adaptor applies custom sorting order to iterator elements, returning a sorted vector. The following program will print out top 5 happiest countries, according to [2018 World Happiness Report](http://worldhappiness.report/ed/2018/).
 
 > `sorted_by()` uses [Ordering trait](https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html) to sort elements.
 
@@ -434,10 +434,7 @@ The `sorted_by()` adaptor applies custom sorting order to iterator elements, ret
 extern crate itertools;
 use itertools::Itertools;
 
-let happiness_index = vec![ ("Austria", 12), ("Costa Rica", 14), ("Norway", 4),
-  ("Australia", 9), ("Netherlands", 7), ("New Zealand", 8), ("United States", 13),
-  ("Israel", 11), ("Denmark", 1), ("Finland", 5), ("Iceland", 3),
-  ("Sweden", 10), ("Canada", 6), ("Puerto Rico", 15), ("Switzerland", 2) ];
+let happiness_index = vec![ ("Canada", 7), ("Iceland", 4), ("Netherlands", 6), ("Finland", 1), ("New Zealand", 8), ("Denmark", 3), ("Norway", 2), ("Sweden", 9), ("Switzerland", 5)];
 
 let top_contries = happiness_index
   .into_iter()

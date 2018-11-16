@@ -182,10 +182,7 @@ fn main() {
     println!("In the enchanted forest, we found {}.", list);
 
     // sorted_by()
-    let happiness_index = vec![ ("Austria", 12), ("Costa Rica", 14), ("Norway", 4),
-      ("Australia", 9), ("Netherlands", 7), ("New Zealand", 8), ("United States", 13),
-      ("Israel", 11), ("Denmark", 1), ("Finland", 5), ("Iceland", 3),
-      ("Sweden", 10), ("Canada", 6), ("Puerto Rico", 15), ("Switzerland", 2) ];
+    let happiness_index = vec![ ("Canada", 7), ("Iceland", 4), ("Netherlands", 6), ("Finland", 1), ("New Zealand", 8), ("Denmark", 3), ("Norway", 2), ("Sweden", 9), ("Switzerland", 5)];
 
     let top_contries = happiness_index
       .into_iter()
