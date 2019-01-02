@@ -171,7 +171,7 @@ fn main() {
     println!("");
 
     // Range with step
-    for i in (0..11).step(2) {
+    for i in (0..11).step_by(2) {
         print!("{} ", i);
     }
     println!("");

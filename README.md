@@ -384,13 +384,13 @@ To use `itertools`, add the following to your `Cargo.toml`:
 itertools = "0.6"
 ```
 
-Remember how we used `filter()` to produce a range of even numbers? Itertools has a handy `step()` method for that.
+Remember how we used `filter()` to produce a range of even numbers? Itertools has a handy `step_by()` method for that.
 
 ```rust
 extern crate itertools;
 use itertools::Itertools;
 
-for i in (0..11).step(2) {
+for i in (0..11).step_by(2) {
     print!("{} ", i);
 }
 
