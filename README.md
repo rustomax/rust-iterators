@@ -52,10 +52,10 @@ for i in 1..11 {
 // output: 1 2 3 4 5 6 7 8 9 10
 ```
 
- The code above will print a series of numbers from `1` to `10`, and not include the last number `11`. In other words, the `..` produces an iterator that is inclusive on the left and exclusive on the right. In order to get a range that is inclusive on both ends, you use the `..=` notation:
+ The code above will print a series of numbers from `1` to `10`, and not include the last number `11`. In other words, the `..` produces an iterator that is inclusive on the left and exclusive on the right. In order to get a range that is inclusive on both ends, you use the `...` notation:
 
 ```rust
-for i in 1..=10 {
+for i in 1...10 {
   print!("{} ", i);
 }
 // output: 1 2 3 4 5 6 7 8 9 10
