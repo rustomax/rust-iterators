@@ -451,11 +451,11 @@ for (country, rating) in top_contries {
 }
 
 // output:
-// # 1: Denmark
-// # 2: Switzerland
-// # 3: Iceland
-// # 4: Norway
-// # 5: Finland
+// # 1: Finland
+// # 2: Norway
+// # 3: Denmark
+// # 4: Iceland
+// # 5: Switzerland
 ```
 
 ## Creating Your Own Iterators
