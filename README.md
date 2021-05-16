@@ -387,13 +387,13 @@ println!("{:?} ", v);
 
 ## Itertools
 
-The [itertools crate](https://docs.rs/itertools/0.6.0/itertools) contains powerful additional iterator adaptors. Below are some examples.
+The [itertools crate](https://docs.rs/itertools/0.10.0/itertools) contains powerful additional iterator adaptors. Below are some examples.
 
 To use `itertools`, add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-itertools = "0.6"
+itertools = "0.10.0"
 ```
 
 The `unique()` adaptor eliminates duplicates from an iterator. The duplicates do not need to be sequential.

@@ -1,8 +1,9 @@
 #[allow(unused_imports)]
-#[macro_use] extern crate itertools;
-extern crate char_iter;
 
+extern crate itertools;
+extern crate char_iter;
 use itertools::Itertools;
+
 mod fahrtocelc;
 
 fn main() {
