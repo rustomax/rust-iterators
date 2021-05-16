@@ -85,7 +85,19 @@ println!("num = {}", (0..10).count());
 
 If the basic incremental sequential range does not satisfy your needs, there are plenty of ways in Rust to customize the range iterators. Let's look at a few common ones.
 
-Often, a range needs to be incremented not by `1`, but by a different number. This can be achieved with the `filter()` method. It applies a *closure* that can return either `true` or `false` to each element of an iterator and produces a new iterator that only contains elements for which the closure returns `true`.
+Often, a range needs to be incremented not by `1`, but by a different number.
+
+The `step_by()` method allows you to do just that
+
+```rust
+for i in (0..11).step_by(2) {
+    print!("{} ", i);
+}
+
+//output: 0 2 4 6 8 10
+```
+
+Alternatively, same result can be achieved with the `filter()` method. It applies a *closure* that can return either `true` or `false` to each element of an iterator and produces a new iterator that only contains elements for which the closure returns `true`.
 
 The following iterator will produce a sequence of even numbers between 0 and 20.
 
@@ -382,19 +394,6 @@ To use `itertools`, add the following to your `Cargo.toml`:
 ```toml
 [dependencies]
 itertools = "0.6"
-```
-
-Remember how we used `filter()` to produce a range of even numbers? Itertools has a handy `step_by()` method for that.
-
-```rust
-extern crate itertools;
-use itertools::Itertools;
-
-for i in (0..11).step_by(2) {
-    print!("{} ", i);
-}
-
-//output: 0 2 4 6 8 10
 ```
 
 The `unique()` adaptor eliminates duplicates from an iterator. The duplicates do not need to be sequential.
