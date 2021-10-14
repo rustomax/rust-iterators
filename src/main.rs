@@ -127,6 +127,29 @@ fn main() {
     let nums = nums.iter().map(|x| x * 2).collect::<Vec<i32>>();
     println!("{:?}", nums);
 
+    let teletubbies: Vec<Character> = vec![
+        Character {
+            name: "Tinky Winky".to_string(),
+            antenna: "triangular".to_string(),
+            color: "purple".to_string(),
+        },
+        Character {
+            name: "Dipsy".to_string(),
+            antenna: "dipstick".to_string(),
+            color: "green".to_string(),
+        },
+        Character {
+            name: "Laa-Laa".to_string(),
+            antenna: "curly".to_string(),
+            color: "yellow".to_string(),
+        },
+    ];
+
+    // println!("{:#?}", teletubbies); // to show the content
+    for tt in teletubbies {
+        println!("Character {} is {}.", tt.name, tt.color);
+    }
+
     // create a vector from an iterator
     let v = (1..11).collect::<Vec<i32>>();
     println!("{:?}", v);
@@ -217,3 +240,12 @@ fn test_ftc() {
         assert_eq!(c, -15.0);
     }
 }
+
+#[derive(Debug)]
+struct Character {
+    name: String,
+    antenna: String,
+    color: String,
+}
+
+/* Last Line */

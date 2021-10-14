@@ -266,6 +266,10 @@ for i in nums.iter() {
    print!("{} ", i);
 }
 // output: 1 2 3 4 5
+
+/* NOTE
+In src/main.rs is demostrated this also works for a vec of structs
+*/
 ```
 
 As a matter of fact, the pattern above is so common that rust provides syntactic sugar for it in the form of the reference operator `&`.
