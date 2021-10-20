@@ -1,13 +1,11 @@
-#[allow(unused_imports)]
-
-extern crate itertools;
 extern crate char_iter;
+#[allow(unused_imports)]
+extern crate itertools;
 use itertools::Itertools;
 
 mod fahrtocelc;
 
 fn main() {
-
     // Basic Range (exclusive on the right)
     for i in 1..11 {
         print!("{} ", i);
@@ -32,7 +30,7 @@ fn main() {
 
     // Range with step using a filter
     for i in (0..21).filter(|x| (x % 2 == 0)) {
-      print!("{} ", i);
+        print!("{} ", i);
     }
     println!("");
 
@@ -80,9 +78,7 @@ fn main() {
     println!("");
 
     // combo madness
-    let r = (1..20)
-        .filter(|&x| x % 5 == 0)
-        .chain((6..9).rev());
+    let r = (1..20).filter(|&x| x % 5 == 0).chain((6..9).rev());
 
     for i in r {
         print!("{} ", i);
@@ -91,7 +87,7 @@ fn main() {
 
     // zip()
     let cities = ["Toronto", "New York", "Melbourne"];
-    let populations = [2_615_060, 8_550_405, ‎4_529_500];
+    let populations = [2_615_060, 8_550_405, 4_529_500];
 
     let matrix = cities.iter().zip(populations.iter());
 
@@ -101,21 +97,21 @@ fn main() {
 
     // range of chars
     for c in char_iter::new('Д', 'П') {
-      print!("{} ", c);
+        print!("{} ", c);
     }
     println!("");
 
     // iterating over vector
     let nums = vec![1, 2, 3, 4, 5];
     for i in nums.iter() {
-       print!("{} ", i);
+        print!("{} ", i);
     }
     println!("");
 
     // iterating over vector by reference
     let nums = vec![1, 2, 3, 4, 5];
     for i in &nums {
-       print!("{} ", i);
+        print!("{} ", i);
     }
     println!("");
 
@@ -156,7 +152,7 @@ fn main() {
     // infinite iterator
     let v = (1..)
         .map(|x| x * x)
-        .filter(|x| x % 5 == 0 )
+        .filter(|x| x % 5 == 0)
         .take(10)
         .collect::<Vec<i32>>();
 
@@ -167,7 +163,7 @@ fn main() {
     let unique = data.iter().unique();
 
     for d in unique {
-      print!("{} ", d);
+        print!("{} ", d);
     }
     println!("");
 
@@ -184,19 +180,25 @@ fn main() {
 
     // sorted_by()
     let happiness_index = vec![
-        ("Canada", 7), ("Iceland", 4), ("Netherlands", 6),
-        ("Finland", 1), ("New Zealand", 8), ("Denmark", 3),
-        ("Norway", 2), ("Sweden", 9), ("Switzerland", 5)
+        ("Canada", 7),
+        ("Iceland", 4),
+        ("Netherlands", 6),
+        ("Finland", 1),
+        ("New Zealand", 8),
+        ("Denmark", 3),
+        ("Norway", 2),
+        ("Sweden", 9),
+        ("Switzerland", 5),
     ];
 
     let top_contries = happiness_index
-      .into_iter()
-      .sorted_by(|a, b| (&a.1).cmp(&b.1))
-      .into_iter()
-      .take(5);
+        .into_iter()
+        .sorted_by(|a, b| (&a.1).cmp(&b.1))
+        .into_iter()
+        .take(5);
 
     for (country, rating) in top_contries {
-      println!("# {}: {}", rating, country);
+        println!("# {}: {}", rating, country);
     }
 
     // our own iterator
