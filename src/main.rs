@@ -1,184 +1,240 @@
-extern crate char_iter;
-#[allow(unused_imports)]
-extern crate itertools;
 use itertools::Itertools;
+use char_iter::new;
 
 mod fahrtocelc;
 
 fn main() {
-    // Basic Range (exclusive on the right)
+    // === Basic Range (exclusive on the right) ===
+    println!("=== Basic Range (exclusive on the right) ===");
     for i in 1..11 {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // Inclusive range
+    // === Inclusive Range ===
+    println!("=== Inclusive Range ===");
     for i in 1..=10 {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // use of discard "_" pattern
+    // === Discard Pattern and Count ===
+    println!("=== Discard Pattern and Count ===");
     let mut n: i32 = 0;
     for _ in 0..10 {
         n += 1;
     }
-    println!("num = {}", n);
+    println!("num (by loop) = {}", n);
+    println!("num (by count) = {}", (0..10).count());
+    println!();
 
-    // count()
-    println!("num = {}", (0..10).count());
-
-    // Range with step using a filter
-    for i in (0..21).filter(|x| (x % 2 == 0)) {
+    // === Range with Filter (even numbers between 0 and 20) ===
+    println!("=== Range with Filter (even numbers between 0 and 20) ===");
+    for i in (0..21).filter(|x| x % 2 == 0) {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // More complex range using a filter
-    for i in (0..=20).filter(|x| (x % 2 == 0) && (x % 3 == 0)) {
+    // === Complex Range with Filter (divisible by both 2 and 3) ===
+    println!("=== Complex Range with Filter (divisible by both 2 and 3) ===");
+    for i in (0..=20).filter(|x| x % 2 == 0 && x % 3 == 0) {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // Reverse range
+    // === Reverse Range ===
+    println!("=== Reverse Range ===");
     for i in (0..11).rev() {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // map()
+    // === Using map() to Produce Squares ===
+    println!("=== Using map() to Produce Squares ===");
     for i in (1..11).map(|x| x * x) {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // fold()
+    // === Using fold() to Sum Squares from 1 to 5 ===
+    println!("=== Using fold() to Sum Squares from 1 to 5 ===");
     let result = (1..=5).fold(0, |acc, x| acc + x * x);
     println!("result = {}", result);
+    println!();
 
+    // === Directly terating over Arrays with Copy Types ===
+    println!("=== Directly Iterating over Arrays with Copy Types ===");
     let cities = ["Toronto", "New York", "Melbourne"];
-
-    // iterating over arrays
-    for city in cities.iter() {
+    for city in cities {
         print!("{}, ", city);
     }
-    println!("");
+    // output: Toronto, New York, Melbourne,
+    println!("Array still available: {:?}", cities);
+    println!();
 
-    // reverse range with a filter
-    for i in (0..=10).rev().filter(|x| (x % 2 == 0)) {
+    // === Iterating over Arrays with Non-Copy Types (using .iter()) ===
+    println!("=== Iterating over Arrays (using .iter()) with String ===");
+    let cities = [
+        String::from("Toronto"),
+        String::from("New York"),
+        String::from("Melbourne"),
+    ];
+    for city in cities.iter() {
+        // `city` is a reference (&String) so the array is not consumed.
+        print!("{}, ", city);
+    }
+    println!("Array still available: {:?}", cities);
+    println!("\n");
+
+    // === Iterating over Arrays with Non-Copy Types (using & operator) ===
+    println!("=== Iterating over Arrays (using & operator) with String ===");
+    let cities = [
+        String::from("Toronto"),
+        String::from("New York"),
+        String::from("Melbourne"),
+    ];
+    for city in &cities {
+        print!("{}, ", city);
+    }
+    println!("\n");
+
+    // === Reverse Range with Filter ===
+    println!("=== Reverse Range with Filter ===");
+    for i in (0..=10).rev().filter(|x| x % 2 == 0) {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // chain()
+    // === Combining Two Ranges with chain() ===
+    println!("=== Combining Two Ranges with chain() ===");
     let c = (1..4).chain(6..9);
     for i in c {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // combo madness
+    // === Combo: Filter and chain ===
+    println!("=== Combo: Filter and chain ===");
     let r = (1..20).filter(|&x| x % 5 == 0).chain((6..9).rev());
-
     for i in r {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // zip()
+    // === Using zip() to Pair Cities with Populations ===
+    println!("=== Using zip() to Pair Cities with Populations ===");
     let cities = ["Toronto", "New York", "Melbourne"];
     let populations = [2_615_060, 8_550_405, 4_529_500];
-
     let matrix = cities.iter().zip(populations.iter());
-
     for (c, p) in matrix {
         println!("{:10}: population = {}", c, p);
     }
+    println!();
 
-    // range of chars
-    for c in char_iter::new('Д', 'П') {
+    // === Range of Characters using char_iter ===
+    println!("=== Range of Characters ===");
+    for c in new('Д', 'П') {
         print!("{} ", c);
     }
-    println!("");
+    println!("\n");
 
-    // iterating over vector
+    // === Iterating over a Vector using iter() ===
+    println!("=== Iterating over a Vector using iter() ===");
     let nums = vec![1, 2, 3, 4, 5];
     for i in nums.iter() {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // iterating over vector by reference
+    // === Iterating over a Vector by Borrowing with & ===
+    println!("=== Iterating over a Vector by Borrowing with & ===");
     let nums = vec![1, 2, 3, 4, 5];
     for i in &nums {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // mutable borrow
+    // === Mutable Borrow: Doubling Each Element in a Vector ===
+    println!("=== Mutable Borrow: Doubling Each Element in a Vector ===");
     let mut nums = vec![1, 2, 3, 4, 5];
     for i in &mut nums {
         *i *= 2;
     }
     println!("{:?}", nums);
+    println!();
 
-    // same as above, but using map()
+    // === Using map() to Double Elements and Collect into a New Vector ===
+    println!("=== Using map() to Double Elements and Collect ===");
     let nums = vec![1, 2, 3, 4, 5];
-    let nums = nums.iter().map(|x| x * 2).collect::<Vec<i32>>();
-    println!("{:?}", nums);
+    let doubled = nums.iter().map(|x| x * 2).collect::<Vec<i32>>();
+    println!("{:?}", doubled);
+    println!();
 
-    // create a vector from an iterator
-    let v = (1..11).collect::<Vec<i32>>();
+    // === Creating a Vector from an Iterator with collect() ===
+    println!("=== Creating a Vector from an Iterator with collect() ===");
+    let v: Vec<i32> = (1..11).collect();
     println!("{:?}", v);
+    println!();
 
-    // enumerate()
+    // === Using enumerate() to Get Index and Value ===
+    println!("=== Using enumerate() to Get Index and Value ===");
     let v = vec![1, 2, 3];
     for (i, n) in v.iter().enumerate() {
         println!("v[{}] = {}", i, n);
     }
+    println!();
 
-    // min() and max()
+    // === Using min() and max() on a Vector ===
+    println!("=== Using min() and max() on a Vector ===");
     let v = vec![3, 5, 0, -2, 3, 4, 1];
     let max = v.iter().max();
     let min = v.iter().min();
     println!("max = {:?}, min = {:?}", max, min);
+    println!();
 
-    // sum()
+    // === Using sum() to Compute the Sum and GPA ===
+    println!("=== Using sum() to Compute the Sum and GPA ===");
     let grades = vec![4, 5, 6, 9, 7, 4, 8];
     let sum: i32 = grades.iter().sum();
     let gpa = sum as f32 / grades.len() as f32;
     println!("sum = {}, gpa = {:.2}", sum, gpa);
+    println!();
 
-    // infinite iterator
+    // === Using an Infinite Iterator (with take()) ===
+    println!("=== Using an Infinite Iterator (with take()) ===");
     let v = (1..)
         .map(|x| x * x)
         .filter(|x| x % 5 == 0)
         .take(10)
         .collect::<Vec<i32>>();
+    println!("{:?}", v);
+    println!();
 
-    println!("{:?} ", v);
-
-    // itertools unique()
+    // === itertools unique(): Eliminating Duplicates ===
+    println!("=== itertools unique(): Eliminating Duplicates ===");
     let data = vec![1, 4, 3, 1, 4, 2, 5];
     let unique = data.iter().unique();
-
     for d in unique {
         print!("{} ", d);
     }
-    println!("");
+    println!("\n");
 
-    // Range with step
+    // === Range with Step using step_by() ===
+    println!("=== Range with Step using step_by() ===");
     for i in (0..11).step_by(2) {
         print!("{} ", i);
     }
-    println!("");
+    println!("\n");
 
-    // join()
+    // === itertools join(): Joining Elements with a Separator ===
+    println!("=== itertools join(): Joining Elements with a Separator ===");
     let creatures = vec!["banshee", "basilisk", "centaur"];
     let list = creatures.iter().join(", ");
     println!("In the enchanted forest, we found {}.", list);
+    println!();
 
-    // sorted_by()
+    // === itertools sorted_by(): Sorting with a Custom Comparator ===
+    println!("=== itertools sorted_by(): Sorting with a Custom Comparator ===");
     let happiness_index = vec![
         ("Canada", 7),
         ("Iceland", 4),
@@ -190,18 +246,17 @@ fn main() {
         ("Sweden", 9),
         ("Switzerland", 5),
     ];
-
-    let top_contries = happiness_index
+    let top_countries = happiness_index
         .into_iter()
-        .sorted_by(|a, b| (&a.1).cmp(&b.1))
-        .into_iter()
+        .sorted_by(|a, b| a.1.cmp(&b.1))
         .take(5);
-
-    for (country, rating) in top_contries {
+    for (country, rating) in top_countries {
         println!("# {}: {}", rating, country);
     }
+    println!();
 
-    // our own iterator
+    // === Using Our Own Iterator from the fahrtocelc Module ===
+    println!("=== Using Our Own Iterator from the fahrtocelc Module ===");
     let ftc = fahrtocelc::FahrToCelc::new(0.0, 5.0);
     let temp_table = ftc.take(5);
     for (f, c) in temp_table {

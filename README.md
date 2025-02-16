@@ -1,10 +1,6 @@
 # rust-iterators
 
-Demonstrates basic Rust iterator use.
-
-[![Build Status](https://travis-ci.org/rustomax/rust-iterators.svg?branch=master)](https://travis-ci.org/rustomax/rust-iterators)
-
-The goal of this tutorial is to provide a handy reference to some of the common iterator patterns. It is not meant to be a replacement for the [Iterator API reference](https://doc.rust-lang.org/std/iter/trait.Iterator.html) or an overview of the core iterator concepts described in [The Book](https://doc.rust-lang.org/book/ch13-02-iterators.html). In fact, this tutorial relies on both resources.
+This tutorial demonstrates basic Rust iterator use with modern idioms and additional techniques. It's goal is to provide a handy reference to some common iterator patterns.
 
 > To take full advantage of the material described here, it is recommended that you have at least cursory familiarity with Rust.
 
@@ -25,13 +21,18 @@ cargo run
 - [Combining Iterator Adaptors](#combining-iterator-adaptors)
 - [Ranges of Characters](#ranges-of-characters)
 - [Iterating over Vectors](#iterating-over-vectors)
+- [Creating Iterators from Collections - A Summary](#creating-iterators-from-collections---a-summary)
 - [Infinity and Beyond](#infinity-and-beyond)
 - [Itertools](#itertools)
+- [Additional Iterator Adaptors](#additional-iterator-adaptors)
 - [Creating Your Own Iterators](#creating-your-own-iterators)
+- [Conclusion](#conclusion)
+
+---
 
 ## Introduction
 
-Life is repetitive and most things in it come as series of items. Programmatically we often need to count, enumerate, and iterate over these sequences. There are several ways to generate repetition in programming languages. One of the most prominent constructs is C-style `for` loop with familiar syntax:
+Life is repetitive, and most things in it come as series of items. Programmatically, we often need to count, enumerate, and iterate over these sequences. Many languages use the familiar C-style `for` loop:
 
 ```c
 for ( x = 0; x < 10; ++x ) {
@@ -39,11 +40,13 @@ for ( x = 0; x < 10; ++x ) {
 }
 ```
 
-While this venerable method is powerful and flexible enough to accommodate many scenarios, it is also responsible for a fair share of bugs ranging from misplaced semicolons to unintentionally mutating the iterator variable inside the loop. In the spirit of safety and consistency with other language features, the C-style `for` loop is absent from Rust. Instead, Rust leverages *iterators* to achieve similar goals (and a lot more).
+While this method is powerful, it can be prone to errors like off-by-one bugs or unintended mutation of the iterator variable. In keeping with Rust’s safety and consistency, there is no C-style `for` loop. Instead, Rust leverages *iterators* to achieve these goals—and much more.
+
+---
 
 ## Basic Ranges
 
-The most basic way to loop over a series of integers in Rust is the range. Range is created using `..` notation and produces an iterator of integers incremented by `1`:
+The simplest way to loop over a series of integers in Rust is with a range. The range created using `..` produces an iterator of integers incremented by `1`:
 
 ```rust
 for i in 1..11 {
@@ -52,7 +55,7 @@ for i in 1..11 {
 // output: 1 2 3 4 5 6 7 8 9 10
 ```
 
- The code above will print a series of numbers from `1` to `10`, and not include the last number `11`. In other words, the `..` produces an iterator that is inclusive on the left and exclusive on the right. In order to get a range that is inclusive on both ends, you use the `..=` notation:
+Note that `1..11` is inclusive at the start and exclusive at the end. If you want a range that includes both endpoints, use the `..=` notation:
 
 ```rust
 for i in 1..=10 {
@@ -61,7 +64,7 @@ for i in 1..=10 {
 // output: 1 2 3 4 5 6 7 8 9 10
 ```
 
-If you do not use the loop iterator variable, you can avoid instantiating it by leveraging the `_` pattern. For instance, the following code prints out the number of elements in the iterator without instantiating a loop iterator variable:
+If you do not use the loop variable, you can simply use the `_` pattern:
 
 ```rust
 let mut n: i32 = 0;
@@ -72,52 +75,53 @@ println!("num = {}", n);
 // output: num = 10
 ```
 
-The example above is somewhat contrived since iterators in Rust have `count()` function, which returns the number of elements in the iterator without the need to count them in a loop:
+Or even more idiomatically, use the iterator’s built-in `count()`:
 
 ```rust
 println!("num = {}", (0..10).count());
 // output: num = 10
 ```
 
-> You will find that experienced Rust programmers are able to express in very terse iterator language what otherwise would have taken many more lines of conventional looping code. We cover some of these patterns below as we talk about adaptors, consumers and chaining iterator methods into complex statements.
+> Experienced Rust programmers often express logic in terse iterator language, turning what might have been several lines of code into a concise chain of adaptors and consumers.
+
+---
 
 ## Digging Deeper
 
-If the basic incremental sequential range does not satisfy your needs, there are plenty of ways in Rust to customize the range iterators. Let's look at a few common ones.
+Sometimes a basic range isn’t enough. Rust lets you customize your iterator in many ways.
 
-Often, a range needs to be incremented not by `1`, but by a different number.
+### Stepping Through a Range
 
-The `step_by()` method allows you to do just that
+Use `step_by()` to increment by a value other than 1:
 
 ```rust
 for i in (0..11).step_by(2) {
     print!("{} ", i);
 }
-
-//output: 0 2 4 6 8 10
+// output: 0 2 4 6 8 10
 ```
 
-Alternatively, same result can be achieved with the `filter()` method. It applies a *closure* that can return either `true` or `false` to each element of an iterator and produces a new iterator that only contains elements for which the closure returns `true`.
-
-The following iterator will produce a sequence of even numbers between 0 and 20.
+Alternatively, use `filter()` to achieve similar results. For example, to iterate over even numbers between 0 and 20:
 
 ```rust
-for i in (0..21).filter(|x| (x % 2 == 0)) {
+for i in (0..21).filter(|x| x % 2 == 0) {
   print!("{} ", i);
 }
 // output: 0 2 4 6 8 10 12 14 16 18 20
 ```
 
-Because `filter()` uses closures, it is very flexible and can be used to produce iterators that evaluate complex conditions. For instance, the following iterator produces a series of integers in the range between 0 and 20 that divide by both `2` and `3` without a remainder:
+Or combine conditions:
 
 ```rust
-for i in (0..21).filter(|x| (x % 2 == 0) && (x % 3 == 0)) {
+for i in (0..21).filter(|x| x % 2 == 0 && x % 3 == 0) {
   print!("{} ", i);
 }
 // output: 0 6 12 18
 ```
 
-While by default ranges are incremental, they can easily be reversed using the `rev()` method.
+### Reversing and Mapping
+
+Reverse a range with `rev()`:
 
 ```rust
 for i in (0..11).rev() {
@@ -126,7 +130,7 @@ for i in (0..11).rev() {
 // output: 10 9 8 7 6 5 4 3 2 1 0
 ```
 
-Another common iterator adaptor, `map()`, applies a closure to each element, and returns the resulting iterator. Here is an example of an iterator that produces a sequence of squares of numbers from `1` to `10`:
+Apply a function to each element with `map()`:
 
 ```rust
 for i in (1..11).map(|x| x * x) {
@@ -135,12 +139,11 @@ for i in (1..11).map(|x| x * x) {
 // output: 1 4 9 16 25 36 49 64 81 100
 ```
 
-`fold()` is a very powerful method. It returns the result of applying a special "accumulator" type of closure to all elements of an iterator resulting in a single value. The following iterator produces a sum of squares of numbers from 1 to 5.
+And use `fold()` to reduce the iterator to a single value:
 
 ```rust
 let result = (1..=5).fold(0, |acc, x| acc + x * x);
 println!("result = {}", result);
-
 // output: result = 55
 ```
 
@@ -148,46 +151,89 @@ Perhaps the easiest way to understand what is happening here is to rewrite the e
 
 ```rust
 let mut acc = 0;
-
 for x in 1..=5 {
   acc += x * x;
 }
-
-let result = acc;
-println!("result = {}", result);
-
+println!("result = {}", acc);
 // output: result = 55
 ```
 
 Wow! Isn't the `fold()` version so much more concise and readable?
 
+
+---
+
 ## Iterating over Arrays
 
-Similarly to iterating over ranges, we can iterate over an array. The benefit of this is that arrays can contain values of arbitrary types, not just integrals. The only caveat is that array is **not** an iterator. We need to turn it into an iterator using the `iter()` method.
+In the past, you had to explicitly call `.iter()` to iterate over an array. Now, arrays in Rust implement `IntoIterator` directly, for example:
 
 ```rust
 let cities = ["Toronto", "New York", "Melbourne"];
 
-for city in cities.iter() {
+for city in cities {
   print!("{}, ", city);
 }
 // output: Toronto, New York, Melbourne,
 ```
 
-## Combining Iterator Adaptors
+It's important to understand what is happening under the hood here. When you iterate over the array directly, the array’s `into_iter()` method is called. If the elements implement the `Copy` trait, they are copied into the loop variable. In the example above, each city is a string slice (`&str`), which implements `Copy`, so during iteration, each city is copied into the variable `city`. This is safe and efficient because string slices are lightweight and implement the `Copy` trait. The array will still be accessible after the iteration, because its elements are copied, not moved. For types that don’t implement `Copy`, such as `String`, the Rust complier doesn't have a choice but to `move` the elements out of the array during iteration, meaning you lose ownership in the original array. In other words, direct iteration over non-`Copy` types, consumes the array. The array becomes unusable after the iteration.
 
-While in the previous sections we covered a good variety of methods allowing you to generate many different types of iterators, the real power of Rust shines when you start combining these approaches.
+Sometimes you might want to avoid copying or moving the elements altogether, especially if the elements are larger or if they do not implement `Copy`. In that case, you iterate over references to the array elements. You can do this in one of two ways:
 
-What if you wanted an inclusive range between `10` and `0` that is decremented by `2`? This is easily accomplished by combining a couple of methods into a single iterator:
+**1. Using `.iter()`**
 
 ```rust
-for i in (0..=10).rev().filter(|x| (x % 2 == 0)) {
+let cities = [
+    String::from("Toronto"),
+    String::from("New York"),
+    String::from("Melbourne"),
+];
+
+for city in cities.iter() {
+    // Here, `city` is a reference to a String (&String), so the values aren’t moved.
+    print!("{}, ", city);
+}
+println!();
+// output: Toronto, New York, Melbourne,
+```
+
+**2. Using the `&` reference operator**
+
+```rust
+let cities = [
+    String::from("Toronto"),
+    String::from("New York"),
+    String::from("Melbourne"),
+];
+
+for city in &cities {
+    // This is equivalent to calling cities.iter().
+    print!("{}, ", city);
+}
+println!();
+// output: Toronto, New York, Melbourne,
+```
+
+Using either approach, the original `cities` array remains intact because you’re only borrowing the elements rather than moving them.
+
+---
+
+## Combining Iterator Adaptors
+
+The real power of Rust shines when you start combining iterator methods.
+
+### Complex Chains
+
+For example, to create an inclusive range from 10 down to 0 in steps of 2:
+
+```rust
+for i in (0..=10).rev().filter(|x| x % 2 == 0) {
   print!("{} ", i);
 }
 // output: 10 8 6 4 2 0
 ```
 
-Need a non-contiguous range (basically a combination of two non-adjacent ranges)? You can combine multiple ranges with the `chain()` method:
+Combine two non-adjacent ranges with `chain()`:
 
 ```rust
 let c = (1..4).chain(6..9);
@@ -198,7 +244,7 @@ for i in c {
 // output: 1 2 3 6 7 8
 ```
 
-You can get very creative combining things! Below is an iterator that combines two ranges: the first one is incremented and filtered, another one - decremented. Not sure what such an abomination could be used for, but here it is nonetheless!
+And here’s a creative mix of incremented and reversed ranges:
 
 ```rust
 let r = (1..20)
@@ -211,14 +257,13 @@ for i in r {
 // output: 5 10 15 8 7 6
 ```
 
-> Notice how in the example above Rust allows us to visually better represent complex iterator statements by splitting them into multiple lines.
+### Zipping Iterators
 
-Another handy method is `zip()`. It is somewhat similar to `chain()` in that it combines two iterators into one. By contrast with `chain()`, `zip()` produces not a contiguous iterator, but an iterator of tuples:
-![zip() method](https://cloud.githubusercontent.com/assets/20992642/17650212/185c5486-6216-11e6-8fd7-34d2aa976c07.PNG)
+The `zip()` adaptor combines two iterators into one of tuples:
 
 ```rust
 let cities = ["Toronto", "New York", "Melbourne"];
-let populations = [2_615_060, 8_550_405, ‎4_529_500];
+let populations = [2_615_060, 8_550_405, 4_529_500];
 
 let matrix = cities.iter().zip(populations.iter());
 
@@ -231,44 +276,56 @@ for (c, p) in matrix {
 // Melbourne : population = 4529500
 ```
 
+### Advanced Combinators
+
+Consider also these helpful methods:
+- **`find()`**: Returns the first element matching a predicate.
+- **`find_map()`**: Combines filtering and mapping.
+- **`partition()`**: Splits the elements into two groups based on a predicate.
+
+A quick example of `find()`:
+
+```rust
+let nums = [1, 3, 5, 7, 8, 9];
+if let Some(even) = nums.iter().find(|&&x| x % 2 == 0) {
+    println!("Found even number: {}", even);
+}
+// output: Found even number: 8
+```
+
+---
+
 ## Ranges of Characters
 
-Programs that manipulate strings or text often require the ability to iterate over a range of characters. The [char_iter crate](https://docs.rs/char-iter/0.1.0/char_iter/) provides convenient way to generate such ranges. `char_iter` supports Unicode characters.
+For programs that manipulate text, iterating over a range of characters can be useful. The [char_iter crate](https://docs.rs/char-iter/0.1.0/char_iter/) provides a convenient way to generate such ranges (supporting Unicode).
 
-To use the `char_iter`, put the following in your `Cargo.toml`
+Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
 char-iter = "0.1"
 ```
 
-And then generate a character range with `char_iter::new()` method:
+Then generate a character range:
 
 ```rust
-extern crate char_iter;
+use char_iter::new;
 
-for c in char_iter::new('Д', 'П') {
+for c in new('Д', 'П') {
   print!("{} ", c);
 }
 // output: Д Е Ж З И Й К Л М Н О П
 ```
 
+---
+
 ## Iterating over Vectors
 
-Vector is one of Rust's fundamental structures. By its nature it is well suited to represent series of repetitive items. There are a number of language facilities in Rust that allow using vectors as iterators and vice-versa.
+Vectors are a fundamental collection in Rust. They can be used with many iterator methods.
 
-In the simplest case, similarly to how we created an iterator from an array, we can create an iterator from a vector using the `iter()` method. In fact this is considered to be the most idiomatic way in Rust to iterate over a vector.
+### Borrowing Patterns
 
-```rust
-let nums = vec![1, 2, 3, 4, 5];
-
-for i in nums.iter() {
-   print!("{} ", i);
-}
-// output: 1 2 3 4 5
-```
-
-As a matter of fact, the pattern above is so common that rust provides syntactic sugar for it in the form of the reference operator `&`.
+Iterate immutably with `.iter()` or, more succinctly, by borrowing with `&`:
 
 ```rust
 let nums = vec![1, 2, 3, 4, 5];
@@ -278,51 +335,52 @@ for i in &nums {
 // output: 1 2 3 4 5
 ```
 
-Notice that the borrows above are immutable. In other words, they are read-only. If we want to make changes to our vector, we have to use the mutable borrow `&mut`. For instance, the following code will mutably iterate over a vector doubling each element in the process.
+If you need to modify elements, use a mutable borrow:
 
 ```rust
 let mut nums = vec![1, 2, 3, 4, 5];
-for i in &mut nums {
+for i in nums.iter_mut() {
     *i *= 2;
 }
 println!("{:?}", nums);
-
-//output: [2, 4, 6, 8, 10]
+// output: [2, 4, 6, 8, 10]
 ```
 
-However, now that you are an iterator ninja, you wouldn't use the `for` loop syntax above. You'd go with a `map()` instead, right?
+If you wish to consume the vector (taking ownership of its elements), use `.into_iter()`:
 
 ```rust
 let nums = vec![1, 2, 3, 4, 5];
-let nums = nums.iter().map(|x| x * 2).collect::<Vec<i32>>();
-println!("{:?}", nums);
-
-//output: [2, 4, 6, 8, 10]
+for i in nums.into_iter() {
+    println!("{}", i);
+}
 ```
 
-> A slight digression. What if we wanted to use mutable iterator to add elements to the vector like so:
->
->  ```rust
->  let mut nums = vec![1, 2, 3, 4, 5];
->  for i in &mut nums {
->      nums.push(*i);
->  }
->  println!("{:?}", nums);
->  ```
->
-> This won't compile with the error message `cannot borrow nums as mutable more than once at a time.` You see, our iterator (instantiated in the `for` loop) already borrowed `nums` as mutable. The `push` expression tries to do that again, which is prohibited in rust. This is rust's famous safety at work. If we could `push` something into the vector, while iterating over it, this would invalidate the iterator causing undefined behavior. Rust prevents this from happening at compile time. Not only iterators are powerful, but they are also super safe.
+### Converting Iterators Back into Collections
 
-Now, let's do the opposite - create a vector from an iterator. In order to do that we need what is called a *consumer*. Consumers force *lazy* iterators to actually produce values.
-
-`collect()` is a common consumer. It takes values from an iterator and converts them into a collection of required type. Below we are taking a range of numbers from `1` to `10` and transforming it into a vector of `i32`:
+Use `collect()` to create a vector from an iterator. In many cases, type inference can handle the type, but you can also annotate it:
 
 ```rust
-let v = (1..11).collect::<Vec<i32>>();
+let v: Vec<i32> = (1..11).collect();
 println!("{:?}", v);
 // output: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
 
-To get both the element of a vector and its index, you can use `enumerate()` method, which returns a tuple containing the index and the item on each iteration:
+### Converting References to Owned Values
+
+When your iterator yields references, but you need owned values (for example, to pass to a function that takes ownership, or to build a new collection of owned items), you can use `.copied()` and `.cloned()` helper methods to transform each item into either a copy or a clone respectively. 
+
+```rust
+let cities = ["Toronto", "New York", "Melbourne"];
+for city in cities.iter().copied() {
+    println!("{}", city);
+}
+```
+
+> Naturally, you'd use `copied()` for items that implement `Copy`, and `cloned()` for items that implement `Clone`
+
+### Other Useful Methods
+
+Get both index and value with `enumerate()`:
 
 ```rust
 let v = vec![1, 2, 3];
@@ -335,9 +393,7 @@ for (i, n) in v.iter().enumerate() {
 // v[2] = 3
 ```
 
-There are a few other functions, that make using iterators on vectors particularly helpful.
-
-`min()` and `max()`, for instance, return options, containing minimum and maximum values of the vector elements respectively:
+Find minimum or maximum elements:
 
 ```rust
 let v = vec![3, 5, 0, -2, 3, 4, 1];
@@ -345,11 +401,10 @@ let max = v.iter().max();
 let min = v.iter().min();
 
 println!("max = {:?}, min = {:?}", max, min);
-
 // output: max = Some(5), min = Some(-2)
 ```
 
-`sum()` returns a sum of all values in an iterator. The following program leverages the `sum()` method to compute the grade point average of a rather mediocre student:
+And sum elements easily:
 
 ```rust
 let grades = vec![4, 5, 6, 9, 7, 4, 8];
@@ -357,9 +412,82 @@ let sum: i32 = grades.iter().sum();
 let gpa = sum as f32 / grades.len() as f32;
 
 println!("sum = {}, gpa = {:.2}", sum, gpa);
-
 // output: sum = 43, gpa = 6.14
 ```
+
+---
+
+## Creating Iterators from Collections - A Summary
+
+If all these ways of creating iterators from collections are confusing, don't worry! Here's a summary of the most common iterator conversion methods in Rust, along with examples and guidance on when to use each one.
+
+### `iter()`
+
+- **What It Does:**  
+  The `.iter()` method creates an iterator that borrows each element of the collection as a reference. In other words, it produces items of type `&T`.
+
+- **When to Use It:**  
+  Use `.iter()` when you want to read from a collection without taking ownership of its elements. This is ideal when the elements are large, non-`Copy`, or when you need to use the collection later.
+
+- **Example:**
+
+  ```rust
+  let numbers = vec![1, 2, 3, 4, 5];
+  
+  // Borrow each element (immutable reference)
+  for num in numbers.iter() {
+      println!("Number: {}", num);
+  }
+  
+  // The original vector is still available here
+  println!("Numbers: {:?}", numbers);
+  ```
+
+### `into_iter()`
+
+- **What It Does:**  
+  The `.into_iter()` method creates an iterator that *consumes* the collection. It takes ownership of the collection and produces items of type `T` (the owned type). For some collections (like arrays), the behavior can vary slightly, but for common collections like `Vec<T>`, it consumes the vector.
+
+- **When to Use It:**  
+  Use `.into_iter()` when you want to move the elements out of the collection, and you no longer need to use the original collection afterward.
+
+- **Example:**
+
+  ```rust
+  let numbers = vec![1, 2, 3, 4, 5];
+  
+  // Consume the vector; items are owned
+  for num in numbers.into_iter() {
+      println!("Owned number: {}", num);
+  }
+  
+  // `numbers` cannot be used here anymore because it was moved.
+  ```
+
+  > **Note:** When used on a type that implements `Copy`, like an array of integers or string slices, the behavior might be less noticeable because the elements are copied rather than moved.
+
+### `iter_mut()`
+
+- **What It Does:**  
+  The `.iter_mut()` method creates an iterator that gives mutable references to each element (`&mut T`). This allows you to modify the elements in place.
+
+- **When to Use It:**  
+  Use `.iter_mut()` when you want to change the elements of a collection while iterating over them.
+
+- **Example:**
+
+  ```rust
+  let mut numbers = vec![1, 2, 3, 4, 5];
+  
+  // Get a mutable reference to each element
+  for num in numbers.iter_mut() {
+      *num *= 2; // double each element
+  }
+  
+  println!("Modified numbers: {:?}", numbers);
+  ```
+
+---
 
 ## Infinity and Beyond
 
@@ -369,37 +497,43 @@ So far we have dealt with iterators that operated on some finite range of values
 let r = (1..).collect::<Vec<i32>>();
 ```
 
-The `(1..)` defines a range that starts with `1` and increments indefinitely. In practice, such program compiles and runs, but eventually crashes with the error message: `fatal runtime error: out of memory`. Well, that's not very practical, you might say. Indeed, by themselves infinite ranges are pretty useless. What makes them useful is combining them with other adaptors and consumers.
+The `(1..)` defines a range that starts with 1 and increments indefinitely. In practice, such program compiles and runs, but eventually crashes with the error message: `fatal runtime error: out of memory`. Well, that's not very practical, you might say. Indeed, by themselves infinite ranges are pretty useless. What makes them useful is combining them with other adaptors and consumers.
 
-One particularly helpful pattern involves using the `take()` method to limit the number of items returned by the iterator. The following iterator will return the first `10` items in a sequence of squares of integers that are divisible by `5` without a remainder.
+One particularly helpful pattern involves using the `take()` method to limit the number of items returned by the iterator. The following iterator will return the first 10 items in a sequence of squares of integers that are divisible by 5 without a remainder.
 
 ```rust
 let v = (1..)
   .map(|x| x * x)
-  .filter(|x| x % 5 == 0 )
+  .filter(|x| x % 5 == 0)
   .take(10)
   .collect::<Vec<i32>>();
 
-println!("{:?} ", v);
-
+println!("{:?}", v);
 // output: [25, 100, 225, 400, 625, 900, 1225, 1600, 2025, 2500]
 ```
 
+---
+
 ## Itertools
 
-The [itertools crate](https://docs.rs/itertools/0.10.0/itertools) contains powerful additional iterator adaptors. Below are some examples.
-
-To use `itertools`, add the following to your `Cargo.toml`:
+The [itertools crate](https://docs.rs/itertools/0.14.0/itertools) offers extra iterator adaptors and methods. Add it to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-itertools = "0.10.0"
+itertools = "0.14.0"
 ```
 
-The `unique()` adaptor eliminates duplicates from an iterator. The duplicates do not need to be sequential.
+Then import it in your code:
 
 ```rust
-extern crate itertools;
+use itertools::Itertools;
+```
+
+### Unique Elements
+
+Eliminate duplicates (even if non-sequential):
+
+```rust
 use itertools::Itertools;
 
 let data = vec![1, 4, 3, 1, 4, 2, 5];
@@ -408,44 +542,41 @@ let unique = data.iter().unique();
 for d in unique {
   print!("{} ", d);
 }
-
-//output: 1 4 3 2 5
+// output: 1 4 3 2 5
 ```
 
-The `join()` adaptor combines iterator elements into a single string with a separator in between the elements.
+### Joining Elements
+
+Combine iterator elements into a single string with a separator:
 
 ```rust
-extern crate itertools;
 use itertools::Itertools;
 
 let creatures = vec!["banshee", "basilisk", "centaur"];
 let list = creatures.iter().join(", ");
 println!("In the enchanted forest, we found {}.", list);
-
 // output: In the enchanted forest, we found banshee, basilisk, centaur.
 ```
 
-The `sorted_by()` adaptor applies custom sorting order to iterator elements, returning a sorted vector. The following program will print out top 5 happiest countries, according to [2018 World Happiness Report](http://worldhappiness.report/ed/2018/).
+### Custom Sorting
 
-> `sorted_by()` uses [Ordering trait](https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html) to sort elements.
+Sort elements using a custom comparator with `sorted_by()`:
 
 ```rust
-extern crate itertools;
 use itertools::Itertools;
 
 let happiness_index = vec![
     ("Canada", 7), ("Iceland", 4), ("Netherlands", 6),
     ("Finland", 1), ("New Zealand", 8), ("Denmark", 3),
     ("Norway", 2), ("Sweden", 9), ("Switzerland", 5)
-  ];
+];
 
-let top_contries = happiness_index
+let top_countries = happiness_index
   .into_iter()
-  .sorted_by(|a, b| (&a.1).cmp(&b.1))
-  .into_iter()
+  .sorted_by(|a, b| a.1.cmp(&b.1))
   .take(5);
 
-for (country, rating) in top_contries {
+for (country, rating) in top_countries {
   println!("# {}: {}", rating, country);
 }
 
@@ -457,11 +588,56 @@ for (country, rating) in top_contries {
 // # 5: Switzerland
 ```
 
+---
+
+## Additional Iterator Adaptors
+
+Here are a few more adaptors that are handy to know:
+
+### `filter_map()`
+
+Combines filtering and mapping:
+
+```rust
+let numbers = vec!["1", "two", "3", "four"];
+let parsed: Vec<i32> = numbers
+    .iter()
+    .filter_map(|s| s.parse().ok())
+    .collect();
+println!("{:?}", parsed);
+// output: [1, 3]
+```
+
+### `take_while()` and `skip()`
+
+These allow you to process elements conditionally. For example, take elements while they are less than 5:
+
+```rust
+let nums = vec![1, 2, 3, 4, 5, 6, 7];
+let taken: Vec<_> = nums.into_iter().take_while(|&x| x < 5).collect();
+println!("{:?}", taken);
+// output: [1, 2, 3, 4]
+```
+
+### `inspect()`
+
+Use `inspect()` for debugging—peek at each value without modifying it:
+
+```rust
+(1..5)
+  .inspect(|x| println!("About to process: {}", x))
+  .for_each(|x| println!("Got: {}", x));
+```
+
+---
+
 ## Creating Your Own Iterators
 
-Beautiful thing about Rust is that you can use generic language facilities to extend it. Let us leverage this awesome power and create our own iterator! We will build a very simple iterator that produces a series of pairs of temperatures `(Fahrenheit, Celsius)`, represented by a tuple of floating-point numbers `(f32, f32)`. The temperature is calculated using commonly known formula: `°C = (°F - 32) / 1.8`.
+One of Rust’s strengths is the ability to create custom iterators. In this example, we create an iterator that produces pairs of temperatures in Fahrenheit and Celsius using the formula:  `°C = (°F - 32) / 1.8`.
 
-An iterator starts with a `struct`. Whatever we name the `struct` will also be the name of the iterator. We will call ours `FahrToCelc`. The `struct` contains fields that hold useful information that persists between subsequent iterator calls. We will have two `f32` fields - the temperature in Fahrenheit, and the increment step:
+### Defining the Iterator
+
+An iterator starts with a struct. Whatever we name the struct will also be the name of the iterator. We will call ours `FahrToCelc`. The struct contains fields that hold useful information that persists between subsequent iterator calls. We will have two `f32` fields - the temperature in Fahrenheit, and the increment step.
 
 ```rust
 struct FahrToCelc {
@@ -470,48 +646,47 @@ struct FahrToCelc {
 }
 ```
 
-Next, we will create a convenience method `new()` that initializes the iterator by passing it initial values for temperature in Fahrenheit and the increment step. This method is strictly speaking not necessary and is not part of the iterator implementation, but I find it to be a nice syntactic sugar that improves overall program readability:
+Next, we will create a convenience method new() that initializes the iterator by passing it initial values for temperature in Fahrenheit and the increment step. This method is strictly speaking not necessary and is not part of the iterator implementation, but I find it to be a nice syntactic sugar that improves overall program readability.
 
 ```rust
 impl FahrToCelc {
   fn new(fahr: f32, step: f32) -> FahrToCelc {
-    FahrToCelc { fahr: fahr, step: step }
+    FahrToCelc { fahr, step }
   }
 }
 ```
 
-Finally, we program the behavior of the iterator by implementing the `Iterator` trait for our `struct`. The trait at a minimum needs to contain the following:
+### Implementing the Iterator Trait
 
-- Definition of the `Item` type. It describes what kind of things the iterator will produce. As mentioned before our iterator produces temperature pairs `(Fahrenheit, Celsius)` represented by a tuple of floating-point numbers `(f32, f32)`, so our `Item` type definition will look like this:
+> In Rust, traits are a way of defining shared behavior. Think of a trait as a promise or a set of rules: if a type implements a trait, it guarantees that it provides certain methods. This is similar to interfaces in other languages.
 
-```rust
-type Item = (f32, f32);
-```
-
-- Function `next()` that actually generates the next `Item`. `next()` takes a mutable reference to `self` and returns an `Option` encapsulating the next value. The reason why we have to return an `Option` and not the item itself is because many iterators need to account for the situation where they have reached the end of the sequence, in which case they return `None`. Since our iterator generates an infinite sequence, our `next()` method will always return `Option<Self::Item>`. Thus, our `next()` function declaration looks like this:
+The Iterator trait is one of the most central traits in Rust. It requires that a type implement the following method:
 
 ```rust
-fn next (&mut self) -> Option<Self::Item>
+fn next(&mut self) -> Option<Self::Item>
 ```
 
-The `next()` function typically also does some internal housekeeping. Ours increments Fahrenheit temperature `fahr` by `step` so that it can be returned on subsequent iteration. Making these modifications to internal fields is the reason why we need to pass a *mutable* reference to `self` as a parameter to `next()`.
+* `next()`: Returns an Option—either `Some(item)` if there’s another element in the sequence, or `None` if the iterator is finished.
+* `Self::Item`: The type of item the iterator yields.
 
-Combining things together, here is the `Iterator` trait implementation:
+In our case, the `Item` type is `(f32, f32)` because we will return pairs of Fahrenheit and Celsius temperatures.
+
+Let's go ahead and implement the `Iterator` trait for our operator.
 
 ```rust
 impl Iterator for FahrToCelc {
   type Item = (f32, f32);
 
-  fn next (&mut self) -> Option<Self::Item> {
+  fn next(&mut self) -> Option<Self::Item> {
     let curr_fahr = self.fahr;
     let curr_celc = (self.fahr - 32.0) / 1.8;
-    self.fahr = self.fahr + self.step;
+    self.fahr += self.step;
     Some((curr_fahr, curr_celc))
   }
 }
 ```
 
-At last, the complete program:
+### Complete Program
 
 ```rust
 struct FahrToCelc {
@@ -521,38 +696,58 @@ struct FahrToCelc {
 
 impl FahrToCelc {
   fn new(fahr: f32, step: f32) -> FahrToCelc {
-    FahrToCelc { fahr: fahr, step: step }
+    FahrToCelc { fahr, step }
   }
 }
 
 impl Iterator for FahrToCelc {
   type Item = (f32, f32);
 
-  fn next (&mut self) -> Option<Self::Item> {
+  fn next(&mut self) -> Option<Self::Item> {
     let curr_fahr = self.fahr;
     let curr_celc = (self.fahr - 32.0) / 1.8;
-    self.fahr = self.fahr + self.step;
+    self.fahr += self.step;
     Some((curr_fahr, curr_celc))
   }
 }
 
 fn main() {
-  // pass the starting temperature and step to the initializer function
+  // Start at 0°F with a step of 5°F.
   let ftc = FahrToCelc::new(0.0, 5.0);
 
-  // produce the iterator table of first 5 values
+  // Take the first 5 values.
   let temp_table = ftc.take(5);
 
-  // print out the temperature table nicely
+  // Print the temperature table.
   for (f, c) in temp_table {
     println!("{:7.2} °F = {:7.2} °C", f, c);
   }
 }
 
 // output:
-//  0.00 °F =  -17.78 °C
-//  5.00 °F =  -15.00 °C
-// 10.00 °F =  -12.22 °C
-// 15.00 °F =   -9.44 °C
-// 20.00 °F =   -6.67 °C
+//   0.00 °F =  -17.78 °C
+//   5.00 °F =  -15.00 °C
+//  10.00 °F =  -12.22 °C
+//  15.00 °F =   -9.44 °C
+//  20.00 °F =   -6.67 °C
 ```
+
+### Other Common Iterator Traits
+
+Rust provides additional iterator-related traits that can enhance or further specify an iterator’s behavior:
+
+* `DoubleEndedIterator`: This trait is for iterators that can be run from both ends. In addition to `next()`, they implement a method called `next_back()` which returns the next item from the end. For instance, the `rev()` method on an iterator works because many iterators also implement `DoubleEndedIterator`.
+
+* `ExactSizeIterator`: If an iterator knows exactly how many items it contains, it can implement `ExactSizeIterator`. This provides the `len()` method, which returns the exact number of remaining elements. This is useful when you need to preallocate space or perform other size-dependent operations.
+
+* `FusedIterator`: Once an iterator that implements `FusedIterator` returns None from `next()`, it will always return None on every subsequent call. This guarantees predictable behavior after the iterator is exhausted and can allow for certain compiler optimizations.
+
+## Conclusion
+
+Rust iterators empower you to write concise, expressive, and safe code by transforming how you handle sequences of data. Whether you're using built-in adaptors like `map()`, `filter()`, and `fold()`, combining multiple methods with `chain()` or `zip()`, or even creating your own custom iterators, you have a flexible toolkit at your disposal.
+ 
+By understanding when to use `.iter()`, `.into_iter()`, or `.iter_mut()`, you can precisely control ownership and borrowing, ensuring your code is both efficient and bug-free. Experiment with these patterns in your own projects and discover just how much simpler and more elegant your iteration logic can become. 
+
+Finally, Rust iterators are more than just a convenient way to loop over collections—they are low-cost (or even zero-cost) abstractions. This means that the performance of iterator-based code is comparable to handwritten loops, thanks to aggressive inlining and optimizations performed by the Rust compiler. By using iterators, you write clear code without sacrificing runtime efficiency.
+
+Happy iterating!

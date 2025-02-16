@@ -2,7 +2,8 @@
 name = "iterators"
 version = "0.1.0"
 authors = ["rustomax"]
+edition = "2021"
 
 [dependencies]
-itertools = "0.10.0"
+itertools = "0.14.0"
 char-iter = "0.1"
