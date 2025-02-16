@@ -28,8 +28,6 @@ cargo run
 - [Creating Your Own Iterators](#creating-your-own-iterators)
 - [Conclusion](#conclusion)
 
----
-
 ## Introduction
 
 Life is repetitive, and most things in it come as series of items. Programmatically, we often need to count, enumerate, and iterate over these sequences. Many languages use the familiar C-style `for` loop:
@@ -41,8 +39,6 @@ for ( x = 0; x < 10; ++x ) {
 ```
 
 While this method is powerful, it can be prone to errors like off-by-one bugs or unintended mutation of the iterator variable. In keeping with Rust’s safety and consistency, there is no C-style `for` loop. Instead, Rust leverages *iterators* to achieve these goals—and much more.
-
----
 
 ## Basic Ranges
 
@@ -83,8 +79,6 @@ println!("num = {}", (0..10).count());
 ```
 
 > Experienced Rust programmers often express logic in terse iterator language, turning what might have been several lines of code into a concise chain of adaptors and consumers.
-
----
 
 ## Digging Deeper
 
@@ -160,9 +154,6 @@ println!("result = {}", acc);
 
 Wow! Isn't the `fold()` version so much more concise and readable?
 
-
----
-
 ## Iterating over Arrays
 
 In the past, you had to explicitly call `.iter()` to iterate over an array. Now, arrays in Rust implement `IntoIterator` directly, for example:
@@ -215,8 +206,6 @@ println!();
 ```
 
 Using either approach, the original `cities` array remains intact because you’re only borrowing the elements rather than moving them.
-
----
 
 ## Combining Iterator Adaptors
 
@@ -293,8 +282,6 @@ if let Some(even) = nums.iter().find(|&&x| x % 2 == 0) {
 // output: Found even number: 8
 ```
 
----
-
 ## Ranges of Characters
 
 For programs that manipulate text, iterating over a range of characters can be useful. The [char_iter crate](https://docs.rs/char-iter/0.1.0/char_iter/) provides a convenient way to generate such ranges (supporting Unicode).
@@ -316,8 +303,6 @@ for c in new('Д', 'П') {
 }
 // output: Д Е Ж З И Й К Л М Н О П
 ```
-
----
 
 ## Iterating over Vectors
 
@@ -415,8 +400,6 @@ println!("sum = {}, gpa = {:.2}", sum, gpa);
 // output: sum = 43, gpa = 6.14
 ```
 
----
-
 ## Creating Iterators from Collections - A Summary
 
 If all these ways of creating iterators from collections are confusing, don't worry! Here's a summary of the most common iterator conversion methods in Rust, along with examples and guidance on when to use each one.
@@ -487,8 +470,6 @@ If all these ways of creating iterators from collections are confusing, don't wo
   println!("Modified numbers: {:?}", numbers);
   ```
 
----
-
 ## Infinity and Beyond
 
 So far we have dealt with iterators that operated on some finite range of values. Rust generalizes iterators in such a way that it is in fact possible to create an infinite range! Let us consider the following example:
@@ -511,8 +492,6 @@ let v = (1..)
 println!("{:?}", v);
 // output: [25, 100, 225, 400, 625, 900, 1225, 1600, 2025, 2500]
 ```
-
----
 
 ## Itertools
 
@@ -588,8 +567,6 @@ for (country, rating) in top_countries {
 // # 5: Switzerland
 ```
 
----
-
 ## Additional Iterator Adaptors
 
 Here are a few more adaptors that are handy to know:
@@ -628,8 +605,6 @@ Use `inspect()` for debugging—peek at each value without modifying it:
   .inspect(|x| println!("About to process: {}", x))
   .for_each(|x| println!("Got: {}", x));
 ```
-
----
 
 ## Creating Your Own Iterators
 
