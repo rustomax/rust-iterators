@@ -1,5 +1,5 @@
-use itertools::Itertools;
 use char_iter::new;
+use itertools::Itertools;
 
 mod fahrtocelc;
 
